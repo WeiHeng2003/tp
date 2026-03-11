@@ -31,6 +31,7 @@ public class CardCollector {
                 }
                 handleParsing(parts[1]);
                 break;
+
             case "find":
                 if (parts.length < 2) {
                     System.out.println("Usage: find [/n NAME] [/p PRICE] [/q QUANTITY]");
@@ -39,6 +40,15 @@ public class CardCollector {
                 }
                 handleFind(parts[1]);
                 break;
+
+            case "remove":
+                if (parts.length < 2) {
+                    System.out.println("Missing index for remove.");
+                    break;
+                }
+                handleRemove(parts[1]);
+                break;
+
             case "history":
                 if (parts.length < 2) {
                     System.out.println("Usage: history [added|modified|removed]");
@@ -48,10 +58,12 @@ public class CardCollector {
                 }
                 handleHistory(parts[1]);
                 break;
+
             case "bye":
-                ui.printExit(); //
+                ui.printExit();
                 isRunning = false;
                 break;
+
             default:
                 System.out.println("Unknown command!");
             }
@@ -99,18 +111,37 @@ public class CardCollector {
         ui.printFound(results);
     }
 
+    private void handleRemove(String argument) {
+        argument = argument.trim();
+
+        try {
+            int index = Integer.parseInt(argument) - 1;
+
+            if (index < 0 || index >= inventory.getSize()) {
+                System.out.println("Invalid card index.");
+                return;
+            }
+
+            inventory.removeCard(index);
+            ui.printRemoved(inventory, index);
+
+        } catch (NumberFormatException e) {
+            boolean removed = inventory.removeCardByName(argument);
+
+            if (removed) {
+                System.out.println("Card \"" + argument + "\" removed successfully.");
+                ui.printList(inventory);
+            } else {
+                System.out.println("Card with name \"" + argument + "\" not found.");
+            }
+        }
+    }
+
     /**
      * Handles the "history" command by displaying different types of inventory change history.
-     * The argument matching is intentionally fuzzy - for example, input starting with "a" will
-     * match "added", "m" will match "modified", and "r" will match "removed". The method uses
-     * string prefix matching against the full command words.
-     *
-     * @param arguments The command argument that determines which history type to display.
-     *                  The argument is matched as a prefix against "added", "modified",
-     *                  and "removed" to determine which history to show.
      */
     private void handleHistory(String arguments) {
-        if ("added".startsWith(arguments)){
+        if ("added".startsWith(arguments)) {
             ui.printAddedHistory(inventory);
         } else if ("modified".startsWith(arguments)) {
             ui.printModifiedHistory(inventory);
