@@ -1,5 +1,8 @@
 package seedu.cardcollector;
 
+import java.time.format.DateTimeFormatter;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -74,6 +77,25 @@ public class Ui {
             System.out.println("Here are the matching cards!");
             for (int i = 0; i < results.size(); i++) {
                 System.out.println((i + 1) + ". " + results.get(i));
+            }
+        }
+        printBorder();
+    }
+
+    public void printAddedHistory(ArrayList<Card> sortedCards) {
+        printBorder();
+        if (sortedCards.isEmpty()) {
+            System.out.println("No history found!");
+        } else {
+            System.out.println("Here is the history!");
+            for (Card card: sortedCards) {
+                Instant lastAdded = card.getLastAdded();
+
+                DateTimeFormatter formatter = DateTimeFormatter
+                        .ofPattern("yyyy-MM-dd HH:mm:ss")
+                        .withZone(ZoneId.systemDefault());
+                String dateString = formatter.format(lastAdded);
+                System.out.println(dateString + " " + card);
             }
         }
         printBorder();

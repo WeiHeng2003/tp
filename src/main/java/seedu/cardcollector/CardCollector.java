@@ -1,5 +1,6 @@
 package seedu.cardcollector;
 
+import java.time.Instant;
 import java.util.ArrayList;
 
 public class CardCollector {
@@ -36,6 +37,9 @@ public class CardCollector {
                 }
                 handleFind(parts[1]);
                 break;
+            case "history":
+                handleHistory();
+                break;
             case "bye":
                 ui.printExit(); //
                 isRunning = false;
@@ -51,7 +55,9 @@ public class CardCollector {
         int quantity = Integer.parseInt(arguments.split("/q")[1].split("/n|/p")[0].trim());
         float price = Float.parseFloat(arguments.split("/p")[1].split("/n|/q")[0].trim());
 
-        Card newCard = new Card(name, quantity, price);
+        Instant currentInstant = Instant.now();
+
+        Card newCard = new Card(name, quantity, price, currentInstant, currentInstant);
         inventory.addCard(newCard);
         ui.printAdded(inventory);
     }
@@ -83,6 +89,11 @@ public class CardCollector {
 
         ArrayList<Card> results = inventory.findCards(name, price, quantity);
         ui.printFound(results);
+    }
+
+    private void handleHistory() {
+        ArrayList<Card> sortedCards = inventory.getCardsSortedByLastAdded();
+        ui.printAddedHistory(sortedCards);
     }
 
     public static void main(String[] args) {
