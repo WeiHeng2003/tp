@@ -20,7 +20,7 @@ public class Ui {
     private static final String FORMAT_HISTORY_REMOVED_RECORD = "%1$s removed -> %2$s%n";
     private static final String FORMAT_HISTORY_DISPLAY_ALL_RECORDS = "Displaying all %1$d records:%n";
     private static final String FORMAT_HISTORY_DISPLAY_N_RECORDS = "Displaying latest %1$d out of %2$d records:%n";
-    private static final int HISTORY_DISPLAY_RECORDS_LIMIT = 15;
+    private static final int HISTORY_DISPLAY_DEFAULT_LIMIT = 15;
 
     private final Scanner scanner;
     private final DateTimeFormatter dateTimeFormatter;
@@ -118,11 +118,12 @@ public class Ui {
         }
     }
 
-    public void printAddedHistory(CardsList inventory, boolean showAll) {
+    public void printAddedHistory(CardsList inventory, int maxDisplayCount) {
         printBorder();
 
         int recordsLength = inventory.getSize();
-        int recordsLimit = showAll ? inventory.getSize() : HISTORY_DISPLAY_RECORDS_LIMIT;
+        int recordsLimit = maxDisplayCount == -1 ? HISTORY_DISPLAY_DEFAULT_LIMIT :
+                Math.min(inventory.getSize(), maxDisplayCount);
 
         // Sorts the cards according to last added date
         ArrayList<Card> sortedCards = inventory.getCards().stream()
@@ -149,11 +150,12 @@ public class Ui {
         printBorder();
     }
 
-    public void printModifiedHistory(CardsList inventory, boolean showAll) {
+    public void printModifiedHistory(CardsList inventory, int maxDisplayCount) {
         printBorder();
 
         int recordsLength = inventory.getSize();
-        int recordsLimit = showAll ? inventory.getSize() : HISTORY_DISPLAY_RECORDS_LIMIT;
+        int recordsLimit = maxDisplayCount == -1 ? HISTORY_DISPLAY_DEFAULT_LIMIT : 
+                Math.min(inventory.getSize(), maxDisplayCount);
 
         // Sorts the cards according to last modified date
         ArrayList<Card> sortedCards = inventory.getCards().stream()
@@ -180,12 +182,12 @@ public class Ui {
         printBorder();
     }
 
-    public void printRemovedHistory(CardsList inventory, boolean showAll) {
+    public void printRemovedHistory(CardsList inventory, int maxDisplayCount) {
         printBorder();
 
         int recordsLength = inventory.getRemovedSize();
-        int recordsLimit = showAll ? inventory.getRemovedSize() : HISTORY_DISPLAY_RECORDS_LIMIT;
-
+        int recordsLimit = maxDisplayCount == -1 ? HISTORY_DISPLAY_DEFAULT_LIMIT :
+                Math.min(inventory.getSize(), maxDisplayCount);
         // Sorts the removed cards according to last added date
         ArrayList<Card> sortedCards = inventory.getRemovedCards().stream()
                 .sorted(Comparator.comparing(Card::getLastModified).reversed())

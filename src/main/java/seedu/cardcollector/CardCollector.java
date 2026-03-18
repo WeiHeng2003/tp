@@ -162,18 +162,44 @@ public class CardCollector {
 
     /**
      * Handles the "history" command by displaying different types of inventory change history.
-     * The argument matching is intentionally fuzzy - for example, input starting with "a" will
+     * The format of the argument is [added | modified | removed] [NUMBER | all]
+     * Argument matching is intentionally fuzzy and case-insensitive for fast usage
+     * For example, input starting with "a" will
      * match "added", "m" will match "modified", and "r" will match "removed".
      *
      * @param arguments The command argument that determines which history type to display.
      */
     private void handleHistory(String arguments) {
-        if ("added".startsWith(arguments)) {
-            ui.printAddedHistory(inventory, false);
-        } else if ("modified".startsWith(arguments)) {
-            ui.printModifiedHistory(inventory, false);
-        } else if ("removed".startsWith(arguments)) {
-            ui.printRemovedHistory(inventory, false);
+        String lowercaseArguments = arguments.trim().toLowerCase();
+        String[] split = lowercaseArguments.split("\\s+", 2);  // Split by one or more spaces
+
+        String historyType = split[0];
+
+        int maxDisplayCount = -1;
+
+        if (split.length > 1) {
+            String maxDisplayCountString = split[1];
+            try {
+                int i = Integer.parseInt(maxDisplayCountString);
+
+                if (i <= 1) {
+                    return;
+                }
+
+                maxDisplayCount = i;
+            } catch (NumberFormatException e) {
+                if ("all".startsWith(maxDisplayCountString)) {
+                    maxDisplayCount = Integer.MAX_VALUE;
+                }
+            }
+        }
+
+        if ("added".startsWith(historyType)) {
+            ui.printAddedHistory(inventory, maxDisplayCount);
+        } else if ("modified".startsWith(historyType)) {
+            ui.printModifiedHistory(inventory, maxDisplayCount);
+        } else if ("removed".startsWith(historyType)) {
+            ui.printRemovedHistory(inventory, maxDisplayCount);
         } else {
             System.out.println("Unknown argument!");
         }
