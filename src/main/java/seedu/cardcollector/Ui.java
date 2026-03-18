@@ -1,8 +1,8 @@
 package seedu.cardcollector;
 
-import java.time.format.DateTimeFormatter;
 import java.time.Instant;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
@@ -45,10 +45,10 @@ public class Ui {
     public void printWelcome() {
         String logo =
                 "  ____              _  ____      _ _           _             \n"
-                + " / ___|__ _ _ __ __| |/ ___|___ | | | ___  ___| |_ ___  _ __ \n"
-                + "| |   / _` | '__/ _` | |   / _ \\| | |/ _ \\/ __| __/ _ \\| '__|\n"
-                + "| |__| (_| | | | (_| | |__| (_) | | |  __/ (__| || (_) | |   \n"
-                + " \\____\\__,_|_|  \\__,_|\\____\\___/|_|_|\\___|\\___|\\__\\___/|_|   \n";
+                        + " / ___|__ _ _ __ __| |/ ___|___ | | | ___  ___| |_ ___  _ __ \n"
+                        + "| |   / _` | '__/ _` | |   / _ \\| | |/ _ \\/ __| __/ _ \\| '__|\n"
+                        + "| |__| (_| | | | (_| | |__| (_) | | |  __/ (__| || (_) | |   \n"
+                        + " \\____\\__,_|_|  \\__,_|\\____\\___/|_|_|\\___|\\___|\\__\\___/|_|   \n";
         System.out.println("Hello I'm\n" + logo);
         System.out.println("What can I do for you?");
         printBorder();
@@ -95,7 +95,6 @@ public class Ui {
     }
 
     public void printFound(ArrayList<Card> results) {
-        // Precondition: Results must exist before attempting to display them
         assert results != null : "Results list passed to Ui should not be null";
 
         printBorder();
@@ -121,17 +120,16 @@ public class Ui {
     public void printAddedHistory(CardsList inventory, boolean showAll) {
         printBorder();
 
-        int recordsLength = inventory.getSize();
-        int recordsLimit = showAll ? inventory.getSize() : HISTORY_DISPLAY_RECORDS_LIMIT;
+        int recordsLength = inventory.getAddedSize();
+        int recordsLimit = showAll ? inventory.getAddedSize() : HISTORY_DISPLAY_RECORDS_LIMIT;
 
-        // Sorts the cards according to last added date
-        ArrayList<Card> sortedCards = inventory.getCards().stream()
+        ArrayList<Card> sortedCards = inventory.getAddedCards().stream()
                 .sorted(Comparator.comparing(Card::getLastAdded).reversed())
                 .limit(recordsLimit)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        assert sortedCards.size() <= recordsLimit :
-                "Number of cards displayed should not be more than the recordsLimit";
+        assert sortedCards.size() <= recordsLimit
+                : "Number of cards displayed should not be more than the recordsLimit";
 
         if (sortedCards.isEmpty()) {
             System.out.printf(FORMAT_HISTORY_ADDED_NO_RECORD);
@@ -140,7 +138,7 @@ public class Ui {
 
             printHistoryRecordCount(recordsLength, recordsLimit);
 
-            for (Card card: sortedCards) {
+            for (Card card : sortedCards) {
                 Instant lastAdded = card.getLastAdded();
                 String dateString = dateTimeFormatter.format(lastAdded);
                 System.out.printf(FORMAT_HISTORY_ADDED_RECORD, dateString, card);
@@ -155,14 +153,13 @@ public class Ui {
         int recordsLength = inventory.getSize();
         int recordsLimit = showAll ? inventory.getSize() : HISTORY_DISPLAY_RECORDS_LIMIT;
 
-        // Sorts the cards according to last modified date
         ArrayList<Card> sortedCards = inventory.getCards().stream()
                 .sorted(Comparator.comparing(Card::getLastModified).reversed())
                 .limit(recordsLimit)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        assert sortedCards.size() <= recordsLimit :
-                "Number of cards displayed should not be more than the recordsLimit";
+        assert sortedCards.size() <= recordsLimit
+                : "Number of cards displayed should not be more than the recordsLimit";
 
         if (sortedCards.isEmpty()) {
             System.out.printf(FORMAT_HISTORY_MODIFIED_NO_RECORD);
@@ -171,7 +168,7 @@ public class Ui {
 
             printHistoryRecordCount(recordsLength, recordsLimit);
 
-            for (Card card: sortedCards) {
+            for (Card card : sortedCards) {
                 Instant lastModified = card.getLastModified();
                 String dateString = dateTimeFormatter.format(lastModified);
                 System.out.printf(FORMAT_HISTORY_MODIFIED_RECORD, dateString, card);
@@ -186,14 +183,13 @@ public class Ui {
         int recordsLength = inventory.getRemovedSize();
         int recordsLimit = showAll ? inventory.getRemovedSize() : HISTORY_DISPLAY_RECORDS_LIMIT;
 
-        // Sorts the removed cards according to last added date
         ArrayList<Card> sortedCards = inventory.getRemovedCards().stream()
                 .sorted(Comparator.comparing(Card::getLastModified).reversed())
                 .limit(recordsLimit)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        assert sortedCards.size() <= recordsLimit :
-                "Number of cards displayed should not be more than the recordsLimit";
+        assert sortedCards.size() <= recordsLimit
+                : "Number of cards displayed should not be more than the recordsLimit";
 
         if (sortedCards.isEmpty()) {
             System.out.printf(FORMAT_HISTORY_REMOVED_NO_RECORD);
@@ -202,7 +198,7 @@ public class Ui {
 
             printHistoryRecordCount(recordsLength, recordsLimit);
 
-            for (Card card: sortedCards) {
+            for (Card card : sortedCards) {
                 Instant lastModified = card.getLastModified();
                 String dateString = dateTimeFormatter.format(lastModified);
                 System.out.printf(FORMAT_HISTORY_REMOVED_RECORD, dateString, card);

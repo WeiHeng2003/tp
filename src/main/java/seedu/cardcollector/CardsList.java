@@ -6,10 +6,12 @@ import java.util.ArrayList;
 public class CardsList {
     private final ArrayList<Card> cards;
     private final ArrayList<Card> removedCards;
+    private final ArrayList<Card> addedCards;
 
     public CardsList() {
         this.cards = new ArrayList<Card>();
         this.removedCards = new ArrayList<Card>();
+        this.addedCards = new ArrayList<Card>();
     }
 
     public void addCard(Card card) {
@@ -21,7 +23,9 @@ public class CardsList {
         Instant currentInstant = Instant.now();
         card.setLastAdded(currentInstant);
         card.setLastModified(currentInstant);
+
         cards.add(card);
+        addedCards.add(card);
     }
 
     public void removeCard(int index) {
@@ -66,6 +70,10 @@ public class CardsList {
         return removedCards;
     }
 
+    public ArrayList<Card> getAddedCards() {
+        return addedCards;
+    }
+
     public int getSize() {
         return cards.size();
     }
@@ -74,9 +82,11 @@ public class CardsList {
         return removedCards.size();
     }
 
-    public ArrayList<Card> findCards(String name, Float price, Integer quantity) {
+    public int getAddedSize() {
+        return addedCards.size();
+    }
 
-        // Precondition: The cards inventory must have been initialized
+    public ArrayList<Card> findCards(String name, Float price, Integer quantity) {
         assert cards != null : "Cards inventory should be initialized before searching";
 
         ArrayList<Card> results = new ArrayList<>();
@@ -96,7 +106,6 @@ public class CardsList {
             }
         }
 
-        // Postconditions: Results list shouldn't be null, and cannot be larger than the cards inventory itself
         assert results != null : "The results list should not be null";
         assert results.size() <= cards.size() : "Found cards cannot exceed total cards inventory size";
 
