@@ -20,7 +20,7 @@ public class Ui {
     private static final String FORMAT_HISTORY_REMOVED_RECORD = "%1$s removed -> %2$s%n";
     private static final String FORMAT_HISTORY_DISPLAY_ALL_RECORDS = "Displaying all %1$d records:%n";
     private static final String FORMAT_HISTORY_DISPLAY_N_RECORDS = "Displaying latest %1$d out of %2$d records:%n";
-    private static final int HISTORY_DISPLAY_DEFAULT_LIMIT = 2;
+    private static final int HISTORY_DISPLAY_DEFAULT_LIMIT = 15;
 
     private final Scanner scanner;
     private final DateTimeFormatter dateTimeFormatter;
