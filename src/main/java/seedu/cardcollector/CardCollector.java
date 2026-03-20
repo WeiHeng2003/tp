@@ -1,7 +1,7 @@
 package seedu.cardcollector;
 
-import seedu.cardcollector.commands.Command;
-import seedu.cardcollector.commands.HistoryCommand;
+import seedu.cardcollector.command.Command;
+import seedu.cardcollector.command.HistoryCommand;
 
 import java.util.ArrayList;
 

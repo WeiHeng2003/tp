@@ -1,4 +1,4 @@
-package seedu.cardcollector.commands;
+package seedu.cardcollector.command;
 
 import seedu.cardcollector.CardsList;
 import seedu.cardcollector.Ui;
