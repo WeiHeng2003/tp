@@ -16,17 +16,27 @@ public class CardsList {
         this.addedCards = new ArrayList<Card>();
     }
 
-    public void addCard(Card card) {
-        if (card == null) {
+    public void addCard(Card newCard) {
+        if (newCard == null) {
             System.out.println("seedu.cardcollector.Card not found!");
             return;
         }
 
         Instant currentInstant = Instant.now();
-        card.setLastAdded(currentInstant);
-        card.setLastModified(currentInstant);
-        cards.add(card);
-        addedCards.add(card);
+
+        for (Card existingCard : cards) {
+            if (existingCard.getName().equalsIgnoreCase(newCard.getName())){
+                int updatedQuantity = existingCard.getQuantity() + newCard.getQuantity();
+                existingCard.setQuantity(updatedQuantity);
+                existingCard.setLastModified(currentInstant);
+                return;
+            }
+        }
+
+        newCard.setLastAdded(currentInstant);
+        newCard.setLastModified(currentInstant);
+        cards.add(newCard);
+        addedCards.add(newCard);
     }
 
     public void removeCardByIndex(int index) {
