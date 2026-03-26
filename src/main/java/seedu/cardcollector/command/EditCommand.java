@@ -2,8 +2,6 @@ package seedu.cardcollector.command;
 
 import seedu.cardcollector.CardsList;
 import seedu.cardcollector.Ui;
-import seedu.cardcollector.Card;
-import java.time.Instant;
 
 public class EditCommand extends Command {
 

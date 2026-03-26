@@ -24,6 +24,24 @@ Adds a new card to your inventory.
 **Example:**
 `add /n Pikachu VMAX /q 2 /p 25.50`
 
+### Editing a card: `edit`
+Edits the name, quantity, or price of an existing card.  
+**Format:** `edit INDEX [/n NEW_NAME] [/q NEW_QUANTITY] [/p NEW_PRICE]`
+* At least **one** field must be provided.
+* `INDEX` is the number shown in the list.
+
+**Examples:**  
+`edit 1 /n Dragonite VMAX`  
+`edit 2 /q 5 /p 12.99`
+
+### Wishlist commands
+All commands work on a separate wishlist. Prefix any command with `wishlist`.  
+**Examples:**  
+`wishlist add /n Charizard /q 1 /p 99.99`  
+`wishlist list`  
+`wishlist edit 1 /n Shiny Charizard`  
+`wishlist remove 2`
+
 ### Finding cards: `find`
 Searches your inventory for cards that match specific attributes. You can search by name, price, quantity, or a combination of them.
 **Format:** `find [/n NAME] [/p PRICE] [/q QUANTITY]`
@@ -73,3 +91,6 @@ Exits the application.
 {Give a 'cheat sheet' of commands here}
 
 * Add todo `todo n/TODO_NAME d/DEADLINE`
+* Find a card `find [/n NAME] [/p PRICE] [/q QUANTITY]`
+* Edit a card `edit INDEX [/n NAME] [/q QTY] [/p PRICE]`
+* Wishlist commands `wishlist <any command>`
