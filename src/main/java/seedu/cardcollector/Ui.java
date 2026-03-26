@@ -121,19 +121,19 @@ public class Ui {
         printBorder();
     }
 
-    public void printList(CardsList inventory) {
-        assert inventory != null : "Inventory should not be null when printing the list";
+    public void printList(CardsList list) {
+        assert list != null : "List should not be null when printing";
         printBorder();
-        int inventorySize = inventory.getSize();
-        assert inventorySize >= 0 : "Inventory size cannot be negative";
+        int listSize = list.getSize();
+        assert listSize >= 0 : "List size cannot be negative";
 
-        if (inventorySize == 0) {
-            System.out.println("Inventory is empty!");
+        if (listSize == 0) {
+            System.out.println("Your card list is empty!");
         } else {
-            System.out.println("Here is your inventory!");
-            for (int i = 0; i < inventorySize; i++) {
-                Card card = inventory.getCard(i);
-                assert card != null : "Inventory should not contain null cards when printing the list";
+            System.out.println("Here is your card list!");
+            for (int i = 0; i < listSize; i++) {
+                Card card = list.getCard(i);
+                assert card != null : "List should not contain null cards";
                 System.out.println((i + 1) + ". " + card);
             }
         }

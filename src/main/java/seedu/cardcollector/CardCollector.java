@@ -9,11 +9,13 @@ import seedu.cardcollector.parsing.Parser;
 public class CardCollector {
     private final Ui ui;
     private final CardsList inventory;
+    private final CardsList wishlist;
     private final Parser parser;
 
     public CardCollector() {
         ui = new Ui();
         inventory = new CardsList();
+        wishlist = new CardsList();
         parser = new Parser();
     }
 
@@ -22,11 +24,30 @@ public class CardCollector {
         boolean isRunning = true;
 
         while (isRunning) {
-            String input = ui.readInput();
+            String input = ui.readInput().trim();
+
+            boolean isWishlistCommand = false;
+            String parseInput = input;
+
+            if (input.toLowerCase().startsWith("wishlist ")) {
+                isWishlistCommand = true;
+                parseInput = input.substring(9).trim();
+            }
+
+            // Prevent "wishlist" alone from crashing parser
+            if (parseInput.isEmpty()) {
+                if (isWishlistCommand) {
+                    ui.printUnknownCommandWarning("wishlist");
+                } else {
+                    ui.printUnknownCommandWarning("");
+                }
+                continue;
+            }
 
             try {
-                Command command = parser.parse(input);
-                CommandResult result = command.execute(ui, inventory);
+                Command command = parser.parse(parseInput);
+                CardsList targetList = isWishlistCommand ? wishlist : inventory;
+                CommandResult result = command.execute(ui, targetList);
                 isRunning = !result.getIsExit();
             } catch (ParseInvalidArgumentException e) {
                 ui.printInvalidArgumentWarning(e.getMessage(), e.getUsage());
