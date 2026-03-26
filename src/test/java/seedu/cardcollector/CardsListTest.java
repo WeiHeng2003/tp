@@ -233,4 +233,27 @@ public class CardsListTest {
         assertEquals(0, inventory.getSize());
         assertEquals(1, wishlist.getSize());
     }
+
+    @Test
+    public void getTwoDifferentCardsForComparison_success() {
+        CardsList cardsList = new CardsList();
+
+        Card card1 = new Card.Builder()
+                .name("Pikachu")
+                .price(5.5f)
+                .quantity(1)
+                .build();
+        Card card2 = new Card.Builder()
+                .name("Charizard")
+                .price(99.99f)
+                .quantity(1)
+                .build();
+
+        cardsList.addCard(card1);
+        cardsList.addCard(card2);
+
+        // Verify cards can be retrieved for comparison (same style as edit test)
+        assertEquals("Pikachu | Quantity: 1 | Price: 5.5", cardsList.getCard(0).toString());
+        assertEquals("Charizard | Quantity: 1 | Price: 99.99", cardsList.getCard(1).toString());
+    }
 }

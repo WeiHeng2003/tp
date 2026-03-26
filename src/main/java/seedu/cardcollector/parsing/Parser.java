@@ -4,6 +4,7 @@ import seedu.cardcollector.CardHistoryType;
 import seedu.cardcollector.command.AddCommand;
 import seedu.cardcollector.command.Command;
 import seedu.cardcollector.command.EditCommand;
+import seedu.cardcollector.command.CompareCommand;
 import seedu.cardcollector.command.ExitCommand;
 import seedu.cardcollector.command.FindCommand;
 import seedu.cardcollector.command.HistoryCommand;
@@ -27,6 +28,7 @@ public class Parser {
     private static final String KEYWORD_LIST_COMMAND = "list";
     private static final String KEYWORD_EXIT_COMMAND = "bye";
     private static final String KEYWORD_EDIT_COMMAND = "edit";
+    private static final String KEYWORD_COMPARE_COMMAND = "compare";
 
     private static final String[] USAGE_HISTORY_COMMAND = {
         "history [added | modified | removed] [NUMBER | all]",
@@ -71,6 +73,8 @@ public class Parser {
             return handleExit(arguments);
         case KEYWORD_EDIT_COMMAND:
             return handleEdit(arguments);
+        case KEYWORD_COMPARE_COMMAND:
+            return handleCompare(arguments);
         default:
             throw new ParseUnknownCommandException(commandKeyword);
         }
@@ -318,5 +322,36 @@ public class Parser {
         }
 
         return new EditCommand(index, name, quantity, price);
+    }
+
+    private Command handleCompare(String args) throws ParseInvalidArgumentException {
+        if (args.isBlank()) {
+            throw new ParseInvalidArgumentException(
+                    "Two indices must be provided",
+                    new String[]{"compare INDEX1 INDEX2"}
+            );
+        }
+
+        String[] parts = args.trim().split(REGEX_WHITESPACES);
+        if (parts.length != 2) {
+            throw new ParseInvalidArgumentException(
+                    "Compare takes exactly two indices",
+                    new String[]{"compare INDEX1 INDEX2"}
+            );
+        }
+
+        int i1;
+        int i2;
+        try {
+            i1 = Integer.parseInt(parts[0].trim()) - 1;
+            i2 = Integer.parseInt(parts[1].trim()) - 1;
+        } catch (NumberFormatException e) {
+            throw new ParseInvalidArgumentException(
+                    "Indices must be valid integers",
+                    new String[]{"compare INDEX1 INDEX2"}
+            );
+        }
+
+        return new CompareCommand(i1, i2);
     }
 }

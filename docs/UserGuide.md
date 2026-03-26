@@ -34,6 +34,16 @@ Edits the name, quantity, or price of an existing card.
 `edit 1 /n Dragonite VMAX`  
 `edit 2 /q 5 /p 12.99`
 
+### Comparing two cards: `compare`
+Compares any two cards from the same list (main collection or wishlist).  
+**Format:** `compare INDEX1 INDEX2`
+* `INDEX1` and `INDEX2` must be different valid indices shown in the list.
+* Works on both the main inventory and the wishlist (use the `wishlist` prefix).
+
+**Examples:**  
+`compare 1 3`  
+`wishlist compare 2 4`
+
 ### Wishlist commands
 All commands work on a separate wishlist. Prefix any command with `wishlist`.  
 **Examples:**  
@@ -93,4 +103,5 @@ Exits the application.
 * Add todo `todo n/TODO_NAME d/DEADLINE`
 * Find a card `find [/n NAME] [/p PRICE] [/q QUANTITY]`
 * Edit a card `edit INDEX [/n NAME] [/q QTY] [/p PRICE]`
+* Compare two cards `compare INDEX1 INDEX2` 
 * Wishlist commands `wishlist <any command>`

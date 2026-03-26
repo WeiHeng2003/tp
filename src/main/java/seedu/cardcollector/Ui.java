@@ -109,6 +109,14 @@ public class Ui {
         printList(inventory);
     }
 
+    public void printCompared(CardsList list, int index1, int index2) {
+        printBorder();
+        System.out.println("Comparing card " + (index1 + 1) + " and card " + (index2 + 1) + ":");
+        System.out.println("Card " + (index1 + 1) + ": " + list.getCard(index1));
+        System.out.println("Card " + (index2 + 1) + ": " + list.getCard(index2));
+        printBorder();
+    }
+
     public void printRemoveByNameSuccess(String targetName, CardsList inventory) {
         printBorder();
         System.out.println("Card \"" + targetName + "\" removed successfully");
