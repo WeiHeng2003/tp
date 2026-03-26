@@ -10,6 +10,7 @@ import seedu.cardcollector.command.HistoryCommand;
 import seedu.cardcollector.command.ListCommand;
 import seedu.cardcollector.command.RemoveCardByIndexCommand;
 import seedu.cardcollector.command.RemoveCardByNameCommand;
+import seedu.cardcollector.exception.ParseBlankCommandException;
 import seedu.cardcollector.exception.ParseInvalidArgumentException;
 import seedu.cardcollector.exception.ParseUnknownCommandException;
 
@@ -39,10 +40,14 @@ public class Parser {
         "find /n Pikachu /q 3"
     };
 
-    public Command parse(String input) throws ParseUnknownCommandException, ParseInvalidArgumentException {
+    public Command parse(String input) throws
+            ParseBlankCommandException,
+            ParseUnknownCommandException,
+            ParseInvalidArgumentException {
         String trimmedInput = input.trim();
+
         if (trimmedInput.isEmpty()) {
-            throw new ParseUnknownCommandException("");
+            throw new ParseBlankCommandException();
         }
 
         String[] parts = trimmedInput.split(REGEX_WHITESPACES, 2);

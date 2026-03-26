@@ -2,6 +2,7 @@ package seedu.cardcollector;
 
 import seedu.cardcollector.command.Command;
 import seedu.cardcollector.command.CommandResult;
+import seedu.cardcollector.exception.ParseBlankCommandException;
 import seedu.cardcollector.exception.ParseInvalidArgumentException;
 import seedu.cardcollector.exception.ParseUnknownCommandException;
 import seedu.cardcollector.parsing.Parser;
@@ -38,10 +39,7 @@ public class CardCollector {
             if (parseInput.isEmpty()) {
                 if (isWishlistCommand) {
                     ui.printUnknownCommandWarning("wishlist");
-                } else {
-                    ui.printUnknownCommandWarning("");
                 }
-                continue;
             }
 
             try {
@@ -49,10 +47,12 @@ public class CardCollector {
                 CardsList targetList = isWishlistCommand ? wishlist : inventory;
                 CommandResult result = command.execute(ui, targetList);
                 isRunning = !result.getIsExit();
-            } catch (ParseInvalidArgumentException e) {
-                ui.printInvalidArgumentWarning(e.getMessage(), e.getUsage());
+            } catch (ParseBlankCommandException e) {
+                ui.printBlankCommandWarning();
             } catch (ParseUnknownCommandException e) {
                 ui.printUnknownCommandWarning(e.getMessage());
+            } catch (ParseInvalidArgumentException e) {
+                ui.printInvalidArgumentWarning(e.getMessage(), e.getUsage());
             }
         }
     }

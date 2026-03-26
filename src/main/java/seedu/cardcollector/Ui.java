@@ -7,7 +7,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Ui {
-    private static final String FORMAT_UNKNOWN_COMMAND = "Unknown command \"%1$s\"%n";
+    private static final String FORMAT_UNKNOWN_COMMAND = "Unknown command \"%1$s\" entered%n";
+    private static final String FORMAT_BLANK_COMMAND = "Blank command entered, did you mean to type something?%n";
     private static final String FORMAT_INVALID_ARGUMENT = "%1$s%n%n";
     private static final String FORMAT_INVALID_ARGUMENT_SYNTAX_USAGE = "Usage: \"%1$s\"%n";
     private static final String FORMAT_INVALID_ARGUMENT_EXAMPLE_USAGE = "Example: \"%1$s\"%n";
@@ -73,6 +74,12 @@ public class Ui {
     public void printUnknownCommandWarning(String message) {
         printBorder();
         System.out.printf(FORMAT_UNKNOWN_COMMAND, message);
+        printBorder();
+    }
+
+    public void printBlankCommandWarning() {
+        printBorder();
+        System.out.printf(FORMAT_BLANK_COMMAND);
         printBorder();
     }
 

@@ -3,6 +3,7 @@ package seedu.cardcollector.parsing;
 import org.junit.jupiter.api.Test;
 import seedu.cardcollector.command.Command;
 import seedu.cardcollector.command.HistoryCommand;
+import seedu.cardcollector.exception.ParseBlankCommandException;
 import seedu.cardcollector.exception.ParseInvalidArgumentException;
 import seedu.cardcollector.exception.ParseUnknownCommandException;
 
@@ -10,9 +11,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 public class ParserTest {
+    //@@author HX2003
     @Test
     public void parse_unknownCommand_exceptionThrown() {
         Parser parser = new Parser();
+
+        assertThrows(
+                ParseBlankCommandException.class,
+                () -> parser.parse(" ")
+        );
+
+        assertThrows(
+                ParseBlankCommandException.class,
+                () -> parser.parse("     ")
+        );
 
         assertThrows(
                 ParseUnknownCommandException.class,
@@ -50,8 +62,12 @@ public class ParserTest {
         );
     }
 
+
     @Test
-    public void parse_historyCommand_success() throws ParseInvalidArgumentException, ParseUnknownCommandException {
+    public void parse_historyCommand_success() throws
+            ParseBlankCommandException,
+            ParseUnknownCommandException,
+            ParseInvalidArgumentException {
         Parser parser = new Parser();
 
         Command command1 = parser.parse("history added");
@@ -70,4 +86,5 @@ public class ParserTest {
         assertInstanceOf(HistoryCommand.class, command5);
     }
 
+    //@@author
 }
