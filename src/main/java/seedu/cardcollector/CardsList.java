@@ -29,14 +29,19 @@ public class CardsList {
                 int updatedQuantity = existingCard.getQuantity() + newCard.getQuantity();
                 existingCard.setQuantity(updatedQuantity);
                 existingCard.setLastModified(currentInstant);
+                assert cards.contains(existingCard) : "Updated card must still be in the list";
                 return;
             }
         }
+        int sizeBefore = cards.size();
 
         newCard.setLastAdded(currentInstant);
         newCard.setLastModified(currentInstant);
         cards.add(newCard);
         addedCards.add(newCard);
+
+        assert cards.size() == sizeBefore + 1 : "List size should increment by 1 after add";
+        assert cards.get(cards.size() - 1).equals(newCard) : "Latest card should be at the end";
     }
 
     public void removeCardByIndex(int index) {
