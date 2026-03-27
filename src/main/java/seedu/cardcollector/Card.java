@@ -23,6 +23,8 @@ public class Card {
         private String name;
         private Integer quantity;
         private Float price;
+        private Instant lastAdded;
+        private Instant lastModified;
 
         public Builder uid(UUID uid) {
             this.uid = uid;
@@ -44,6 +46,15 @@ public class Card {
             return this;
         }
 
+        public Builder lastAdded(Instant lastAdded) {
+            this.lastAdded = lastAdded;
+            return this;
+        }
+
+        public Builder lastModified(Instant lastModified) {
+            this.lastModified = lastModified;
+            return this;
+        }
 
         public Card build() {
             // When no uid is specified, a random one is generated.
@@ -55,8 +66,10 @@ public class Card {
             assert price != null;
             assert quantity != null;
             assert quantity >= 0 : "Quantity cannot be negative";
-
-            return new Card(this);
+            Card card = new Card(this);
+            card.setLastAdded(lastAdded);
+            card.setLastModified(lastModified);
+            return card;
         }
     }
 

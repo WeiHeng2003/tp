@@ -1,5 +1,7 @@
 package seedu.cardcollector;
 
+import java.io.IOException;
+
 import seedu.cardcollector.command.Command;
 import seedu.cardcollector.command.CommandResult;
 import seedu.cardcollector.exception.ParseBlankCommandException;
@@ -12,12 +14,16 @@ public class CardCollector {
     private final CardsList inventory;
     private final CardsList wishlist;
     private final Parser parser;
+    private final Storage storage;
 
     public CardCollector() {
         ui = new Ui();
-        inventory = new CardsList();
-        wishlist = new CardsList();
         parser = new Parser();
+        storage = Storage.createDefault();
+
+        AppState initialState = loadState();
+        inventory = initialState.getInventory();
+        wishlist = initialState.getWishlist();
     }
 
     public void run() {
@@ -46,6 +52,7 @@ public class CardCollector {
                 Command command = parser.parse(parseInput);
                 CardsList targetList = isWishlistCommand ? wishlist : inventory;
                 CommandResult result = command.execute(ui, targetList);
+                saveState();
                 isRunning = !result.getIsExit();
             } catch (ParseBlankCommandException e) {
                 ui.printBlankCommandWarning();
@@ -59,5 +66,22 @@ public class CardCollector {
 
     public static void main(String[] args) {
         new CardCollector().run();
+    }
+
+    private AppState loadState() {
+        try {
+            return storage.load();
+        } catch (IOException e) {
+            System.err.println("Failed to load saved data: " + e.getMessage());
+            return new AppState(new CardsList(), new CardsList());
+        }
+    }
+
+    private void saveState() {
+        try {
+            storage.save(new AppState(inventory, wishlist));
+        } catch (IOException e) {
+            System.err.println("Failed to save data: " + e.getMessage());
+        }
     }
 }

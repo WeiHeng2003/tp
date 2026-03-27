@@ -16,6 +16,12 @@ public class CardsList {
         this.addedCards = new ArrayList<Card>();
     }
 
+    public CardsList(ArrayList<Card> cards, ArrayList<Card> removedCards, ArrayList<Card> addedCards) {
+        this.cards = new ArrayList<>(cards);
+        this.removedCards = new ArrayList<>(removedCards);
+        this.addedCards = new ArrayList<>(addedCards);
+    }
+
     public void addCard(Card newCard) {
         if (newCard == null) {
             System.out.println("seedu.cardcollector.Card not found!");
