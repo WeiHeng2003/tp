@@ -118,6 +118,11 @@ public class Ui {
         printBorder();
     }
 
+    public void printAcquired(CardsList inventory) {
+        System.out.println("I have acquired the card and added it to your inventory!");
+        printList(inventory);
+    }
+
     public void printRemoveByNameSuccess(String targetName, CardsList inventory) {
         printBorder();
         System.out.println("Card \"" + targetName + "\" removed successfully");

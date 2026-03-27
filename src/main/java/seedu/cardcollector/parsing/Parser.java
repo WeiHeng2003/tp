@@ -3,6 +3,7 @@ package seedu.cardcollector.parsing;
 import java.nio.file.Path;
 import seedu.cardcollector.CardHistoryType;
 import seedu.cardcollector.command.AddCommand;
+import seedu.cardcollector.command.AcquiredCommand;
 import seedu.cardcollector.command.Command;
 import seedu.cardcollector.command.EditCommand;
 import seedu.cardcollector.command.CompareCommand;
@@ -25,6 +26,7 @@ public class Parser {
 
     private static final String KEYWORD_HISTORY_COMMAND = "history";
     private static final String KEYWORD_ADD_COMMAND = "add";
+    private static final String KEYWORD_ACQUIRED_COMMAND = "acquired";
     private static final String KEYWORD_REMOVE_INDEX_COMMAND = "removeindex";
     private static final String KEYWORD_REMOVE_NAME_COMMAND = "removename";
     private static final String KEYWORD_FIND_COMMAND = "find";
@@ -93,6 +95,8 @@ public class Parser {
             return handleUpload(arguments);
         case KEYWORD_UNDO_UPLOAD_COMMAND:
             return handleUndoUpload(arguments);
+        case KEYWORD_ACQUIRED_COMMAND:
+            return handleAcquired(arguments);
         default:
             throw new ParseUnknownCommandException(commandKeyword);
         }
@@ -416,5 +420,24 @@ public class Parser {
         }
 
         return new CompareCommand(i1, i2);
+    }
+
+    private Command handleAcquired(String args) throws ParseInvalidArgumentException {
+        if (args.isBlank()) {
+            throw new ParseInvalidArgumentException(
+                    "Index must be provided",
+                    new String[]{"acquired INDEX"}
+            );
+        }
+
+        try {
+            int index = Integer.parseInt(args.trim()) - 1;
+            return new AcquiredCommand(index);
+        } catch (NumberFormatException e) {
+            throw new ParseInvalidArgumentException(
+                    "Index must be a valid integer",
+                    new String[]{"acquired INDEX"}
+            );
+        }
     }
 }

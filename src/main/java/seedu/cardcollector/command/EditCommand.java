@@ -20,11 +20,11 @@ public class EditCommand extends Command {
         var inventory = context.getTargetList();
         if (targetIndex < 0 || targetIndex >= inventory.getSize()) {
             ui.printInvalidIndex();
-            return new CommandResult(false);
+            return new CommandResult(false, false);
         }
 
         inventory.editCard(targetIndex, newName, newQuantity, newPrice);
         ui.printEdited(inventory, targetIndex);
-        return new CommandResult(false);
+        return new CommandResult(false, true);
     }
 }

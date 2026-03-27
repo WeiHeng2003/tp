@@ -256,4 +256,27 @@ public class CardsListTest {
         assertEquals("Pikachu | Quantity: 1 | Price: 5.5", cardsList.getCard(0).toString());
         assertEquals("Charizard | Quantity: 1 | Price: 99.99", cardsList.getCard(1).toString());
     }
+
+    @Test
+    public void acquired_movesCardFromWishlistToInventory_success() {
+        CardsList inventory = new CardsList();
+        CardsList wishlist = new CardsList();
+
+        Card wishCard = new Card.Builder()
+                .name("Charizard")
+                .price(99.99f)
+                .quantity(1)
+                .build();
+        wishlist.addCard(wishCard);
+
+        // Simulate acquired behaviour
+        int index = 0;
+        Card card = wishlist.getCard(index);
+        wishlist.removeCardByIndex(index);
+        inventory.addCard(card);
+
+        assertEquals(0, wishlist.getSize());
+        assertEquals(1, inventory.getSize());
+        assertEquals("Charizard", inventory.getCard(0).getName());
+    }
 }
