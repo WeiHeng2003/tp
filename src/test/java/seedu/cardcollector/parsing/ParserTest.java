@@ -90,7 +90,8 @@ public class ParserTest {
     }
 
     @Test
-    public void parse_transferCommands_success() {
+    public void parse_transferCommands_success() throws ParseBlankCommandException,
+            ParseUnknownCommandException, ParseInvalidArgumentException {
         Parser parser = new Parser();
 
         Command downloadCommand = parser.parse("download /f backups/cards.txt");
