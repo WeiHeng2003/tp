@@ -2,7 +2,11 @@ package seedu.cardcollector.parsing;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import seedu.cardcollector.command.*;
+import seedu.cardcollector.command.AddCommand;
+import seedu.cardcollector.command.RemoveCardByIndexCommand;
+import seedu.cardcollector.command.RemoveCardByNameCommand;
+import seedu.cardcollector.command.HistoryCommand;
+import seedu.cardcollector.command.Command;
 import seedu.cardcollector.exception.ParseBlankCommandException;
 import seedu.cardcollector.exception.ParseInvalidArgumentException;
 import seedu.cardcollector.exception.ParseUnknownCommandException;
@@ -42,6 +46,7 @@ public class ParserTest {
         );
     }
 
+    //@@author WeiHeng2003
     @Test
     public void parse_addCommand_success() throws Exception {
         assertInstanceOf(AddCommand.class, parser.parse("add /n Pikachu /q 1 /p 5.5"));
@@ -50,6 +55,7 @@ public class ParserTest {
                 + java.util.UUID.randomUUID()));
     }
 
+    //@@author WeiHeng2003
     @Test
     public void parse_addCommandMissingFlags_exceptionThrown() {
         assertThrows(
@@ -70,6 +76,7 @@ public class ParserTest {
         );
     }
 
+    //@@author WeiHeng2003
     @Test
     public void parse_addCommandInvalidNumbers_exceptionThrown() {
         assertThrows(
@@ -82,6 +89,7 @@ public class ParserTest {
         );
     }
 
+    //@@author WeiHeng2003
     @Test
     public void parse_removeIndexCommand_success() throws Exception {
         assertInstanceOf(
@@ -94,6 +102,7 @@ public class ParserTest {
         );
     }
 
+    //@@author WeiHeng2003
     @Test
     public void parse_invalidRemoveIndexCommand_exceptionThrown() {
         assertThrows(
@@ -110,6 +119,7 @@ public class ParserTest {
         );
     }
 
+    //@@author WeiHeng2003
     @Test
     public void parse_removeNameCommand_success() throws Exception {
         assertInstanceOf(
@@ -122,6 +132,7 @@ public class ParserTest {
         );
     }
 
+    //@@author WeiHeng2003
     @Test
     public void parse_invalidRemoveNameCommand_exceptionThrown() {
         assertThrows(
