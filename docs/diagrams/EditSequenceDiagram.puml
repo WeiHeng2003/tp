@@ -1,0 +1,22 @@
+@startuml
+!include Style.puml
+
+actor User
+participant Ui
+participant Parser
+participant CardCollector
+participant EditCommand
+participant CardsList
+participant Card
+
+User -> Ui : "edit 1 /n Dragonite /q 3"
+Ui -> CardCollector : readInput()
+CardCollector -> Parser : parse(...)
+Parser -> EditCommand ** : new EditCommand(...)
+CardCollector -> EditCommand : execute(ui, inventory)
+EditCommand -> CardsList : editCard(...)
+CardsList -> Card : setName(...) / setQuantity(...)
+CardsList -> Card : setLastModified(now)
+EditCommand -> Ui : printEdited(...)
+
+@enduml
