@@ -96,28 +96,7 @@ public void printEdited(CardsList inventory, int index) {
 ```
 
 #### Sequence Diagram (`edit 1 /n Dragonite /q 3`)
-
-```plantuml
-@startuml
-actor User
-participant Ui
-participant Parser
-participant CardCollector
-participant EditCommand
-participant CardsList
-participant Card
-
-User -> Ui : "edit 1 /n Dragonite /q 3"
-Ui -> CardCollector : readInput()
-CardCollector -> Parser : parse(...)
-Parser -> EditCommand ** : new EditCommand(...)
-CardCollector -> EditCommand : execute(ui, inventory)
-EditCommand -> CardsList : editCard(...)
-CardsList -> Card : setName(...) / setQuantity(...)
-CardsList -> Card : setLastModified(now)
-EditCommand -> Ui : printEdited(...)
-@enduml
-```
+- ADD THE DIAGRAM 
 
 **Design decisions**
 - Require **at least one** field to be edited (enforced in Parser).
@@ -219,28 +198,35 @@ AddCommand -> CardsList : addCard(newCard)
 
 ## Product scope
 ### Target user profile
-
 {Describe the target user profile}
-
+- Trading Card Game (TCG) collectors
+- Requires a fast and easy way to update quantity, check prices and move cards from wishlist
+- is reasonably comfortable using CLI apps
 ### Value proposition
-
 {Describe the value proposition: what problem does it solve?}
+- Quick commands to track cards that you currently own without having to find physical binders
 
 ## User Stories
 
-|Version| As a ... | I want to ... | So that I can ...|
-|--------|----------|---------------|------------------|
-|v1.0|new user|see usage instructions|refer to them when I forget how to use the application|
-|v2.0|user|find a to-do item by name|locate a to-do without having to go through the entire list|
+| Version | As a ...      | I want to ...                                                                | So that I can ...                                                               |
+|---------|---------------|------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| v1.0    | TCG Collector | add/remove cards to my collection with their details (name, quantity, price) | maintain an accurate digital catalog of all my cards                            |
+| v1.0    | TCG Collector | search for specific cards by name or set using text-based queries            | quickly locate cards in my collection without browsing through physical binders |
+| v1.0    | TCG Collector | organise my cards by different categories (set, rarity, card type)           | browse my collection in a structured way that suits my needs                    |
+| v1.0    | User          | edit any stored data                                                         | update/correct mistakes when I first add the card                               |
+| v1.0    | TCG Collector | view a chronological list of cards I recently added or removed               | quickly see what’s changed in my collection                                     |
+| v2.0    | TCG Collector | store my cards data even when I close the application                        | use the app without having to input my current cards again                      |
+| v2.0    | TCG Collector | have a wishlist to track what cards I want to get                            | check them off the wishlist once I have them                                    |
+
 
 ## Non-Functional Requirements
-
-{Give non-functional requirements}
+- Should work on any [mainstream OS](#mainstream-os) as long as it has Java 17 or above installed
+- Should be able to hold up to 1000 cards without a noticeable sluggishness in performance
 
 ## Glossary
-
-* *glossary item* - Definition
+### Mainstream OS
+- Windows, Linux, Unix
 
 ## Instructions for manual testing
-
 {Give instructions on how to do a manual product testing e.g., how to load sample data to be used for testing}
+
