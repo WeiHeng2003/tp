@@ -8,6 +8,8 @@ import seedu.cardcollector.card.CardHistoryType;
 import seedu.cardcollector.card.CardsAnalytics;
 import seedu.cardcollector.card.CardsList;
 
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
 import java.time.Instant;
@@ -36,23 +38,29 @@ public class Ui {
 
     private static final int HISTORY_DISPLAY_DEFAULT_LIMIT = 15;
 
+    private final PrintStream out;
     private final Scanner scanner;
     private final DateTimeFormatter dateTimeFormatter;
 
-    public Ui() {
-        this.scanner = new Scanner(System.in);
+    public Ui(InputStream in, PrintStream out) {
+        this.out = out;
+        this.scanner = new Scanner(in);
         this.dateTimeFormatter = DateTimeFormatter
                 .ofPattern("yyyy-MM-dd HH:mm:ss")
                 .withZone(ZoneId.systemDefault());
     }
 
+    public Ui() {
+        this(System.in, System.out);
+    }
+
     public void printBorder() {
-        System.out.println("_______________________________________________________");
+        out.println("_______________________________________________________");
     }
 
     public void echo(String input) {
         printBorder();
-        System.out.println(input);
+        out.println(input);
         printBorder();
     }
 
@@ -63,39 +71,39 @@ public class Ui {
                         + "| |   / _` | '__/ _` | |   / _ \\| | |/ _ \\/ __| __/ _ \\| '__|\n"
                         + "| |__| (_| | | | (_| | |__| (_) | | |  __/ (__| || (_) | |   \n"
                         + " \\____\\__,_|_|  \\__,_|\\____\\___/|_|_|\\___|\\___|\\__\\___/|_|   \n";
-        System.out.println("Hello I'm\n" + logo);
-        System.out.println("What can I do for you?");
+        out.println("Hello I'm\n" + logo);
+        out.println("What can I do for you?");
         printBorder();
     }
 
     public void printInvalidArgumentWarning(String message, String[] usage) {
         printBorder();
-        System.out.printf(FORMAT_INVALID_ARGUMENT, message);
+        out.printf(FORMAT_INVALID_ARGUMENT, message);
 
         assert usage.length > 0;
 
-        System.out.printf(FORMAT_INVALID_ARGUMENT_SYNTAX_USAGE, usage[0]);
+        out.printf(FORMAT_INVALID_ARGUMENT_SYNTAX_USAGE, usage[0]);
         for (int i = 1; i < usage.length; i++) {
-            System.out.printf(FORMAT_INVALID_ARGUMENT_EXAMPLE_USAGE, usage[i]);
+            out.printf(FORMAT_INVALID_ARGUMENT_EXAMPLE_USAGE, usage[i]);
         }
         printBorder();
     }
 
     public void printUnknownCommandWarning(String message) {
         printBorder();
-        System.out.printf(FORMAT_UNKNOWN_COMMAND, message);
+        out.printf(FORMAT_UNKNOWN_COMMAND, message);
         printBorder();
     }
 
     public void printBlankCommandWarning() {
         printBorder();
-        System.out.printf(FORMAT_BLANK_COMMAND);
+        out.printf(FORMAT_BLANK_COMMAND);
         printBorder();
     }
 
     public void printExit() {
         printBorder();
-        System.out.println("Bye! See you again");
+        out.println("Bye! See you again");
         printBorder();
     }
 
@@ -104,59 +112,59 @@ public class Ui {
     }
 
     public void printAdded(CardsList inventory) {
-        System.out.println("I have added a new card!");
+        out.println("I have added a new card!");
         printList(inventory);
     }
 
     public void printRemoved(CardsList inventory, int index) {
-        System.out.println("I have removed card " + (index + 1));
-        System.out.println("You have " + inventory.getSize() + " card(s) left");
+        out.println("I have removed card " + (index + 1));
+        out.println("You have " + inventory.getSize() + " card(s) left");
         printList(inventory);
     }
 
     public void printEdited(CardsList inventory, int index) {
-        System.out.println("I have edited card " + (index + 1) + "!");
+        out.println("I have edited card " + (index + 1) + "!");
         printList(inventory);
     }
 
     public void printNotEdited(CardsList inventory) {
-        System.out.println("No changes found!");
+        out.println("No changes found!");
     }
 
     public void printCompared(CardsList list, int index1, int index2) {
         printBorder();
-        System.out.println("Comparing card " + (index1 + 1) + " and card " + (index2 + 1) + ":");
-        System.out.println("Card " + (index1 + 1) + ": " + list.getCard(index1));
-        System.out.println("Card " + (index2 + 1) + ": " + list.getCard(index2));
+        out.println("Comparing card " + (index1 + 1) + " and card " + (index2 + 1) + ":");
+        out.println("Card " + (index1 + 1) + ": " + list.getCard(index1));
+        out.println("Card " + (index2 + 1) + ": " + list.getCard(index2));
         printBorder();
     }
 
     public void printAcquired(CardsList inventory) {
-        System.out.println("I have acquired the card and added it to your inventory!");
+        out.println("I have acquired the card and added it to your inventory!");
         printList(inventory);
     }
 
     public void printReordered(CardsList list) {
-        System.out.println("I have reordered the cards!");
+        out.println("I have reordered the cards!");
         printList(list);
     }
 
     public void printRemoveByNameSuccess(String targetName, CardsList inventory) {
         printBorder();
-        System.out.println("Card \"" + targetName + "\" removed successfully");
-        System.out.println("You have " + inventory.getSize() + " card(s) left");
+        out.println("Card \"" + targetName + "\" removed successfully");
+        out.println("You have " + inventory.getSize() + " card(s) left");
         printBorder();
     }
 
     public void printCardNotFound(String targetName) {
         printBorder();
-        System.out.println("No card named \"" + targetName + "\" was found.");
+        out.println("No card named \"" + targetName + "\" was found.");
         printBorder();
     }
 
     public void printInvalidIndex() {
         printBorder();
-        System.out.println("Invalid card index.");
+        out.println("Invalid card index.");
         printBorder();
     }
 
@@ -167,13 +175,13 @@ public class Ui {
         assert listSize >= 0 : "List size cannot be negative";
 
         if (listSize == 0) {
-            System.out.println("Your card list is empty!");
+            out.println("Your card list is empty!");
         } else {
-            System.out.println("Here is your card list!");
+            out.println("Here is your card list!");
             for (int i = 0; i < listSize; i++) {
                 Card card = list.getCard(i);
                 assert card != null : "List should not contain null cards";
-                System.out.println((i + 1) + ". " + card);
+                out.println((i + 1) + ". " + card);
             }
         }
         printBorder();
@@ -181,10 +189,10 @@ public class Ui {
 
     public void printAnalytics(String listName, CardsAnalytics analytics) {
         printBorder();
-        System.out.println("Analytics for your " + listName + ":");
-        System.out.println("Distinct cards: " + analytics.getDistinctCards());
-        System.out.println("Total quantity: " + analytics.getTotalQuantity());
-        System.out.println("Total value: $" + formatMoney(analytics.getTotalValue()));
+        out.println("Analytics for your " + listName + ":");
+        out.println("Distinct cards: " + analytics.getDistinctCards());
+        out.println("Total quantity: " + analytics.getTotalQuantity());
+        out.println("Total value: $" + formatMoney(analytics.getTotalValue()));
 
         printMostExpensiveCards(analytics.getMostExpensiveCards());
         printTopSets(analytics.getTopSetsByCount());
@@ -196,11 +204,11 @@ public class Ui {
 
         printBorder();
         if (results.isEmpty()) {
-            System.out.println("No cards found matching your criteria!");
+            out.println("No cards found matching your criteria!");
         } else {
-            System.out.println("Here are the matching cards!");
+            out.println("Here are the matching cards!");
             for (int i = 0; i < results.size(); i++) {
-                System.out.println((i + 1) + ". " + results.get(i));
+                out.println((i + 1) + ". " + results.get(i));
             }
         }
         printBorder();
@@ -211,42 +219,42 @@ public class Ui {
 
         printBorder();
         if (results.isEmpty()) {
-            System.out.println("No cards found with tag \"" + tag + "\".");
+            out.println("No cards found with tag \"" + tag + "\".");
         } else {
-            System.out.println("Here are the cards tagged \"" + tag + "\"!");
+            out.println("Here are the cards tagged \"" + tag + "\"!");
             for (int i = 0; i < results.size(); i++) {
-                System.out.println((i + 1) + ". " + results.get(i));
+                out.println((i + 1) + ". " + results.get(i));
             }
         }
         printBorder();
     }
 
     private void printMostExpensiveCards(List<CardsAnalytics.CardMetric> expensiveCards) {
-        System.out.println("Top expensive cards:");
+        out.println("Top expensive cards:");
         if (expensiveCards.isEmpty()) {
-            System.out.println("None");
+            out.println("None");
             return;
         }
 
         for (int i = 0; i < expensiveCards.size(); i++) {
             CardsAnalytics.CardMetric metric = expensiveCards.get(i);
             Card card = metric.getCard();
-            System.out.println((i + 1) + ". " + card.getName()
+            out.println((i + 1) + ". " + card.getName()
                     + " ($" + formatMoney(card.getPrice()) + " each, qty " + card.getQuantity()
                     + ", total $" + formatMoney(metric.getLineValue()) + ")");
         }
     }
 
     private void printTopSets(List<CardsAnalytics.SetMetric> topSets) {
-        System.out.println("Top sets by count:");
+        out.println("Top sets by count:");
         if (topSets.isEmpty()) {
-            System.out.println("None");
+            out.println("None");
             return;
         }
 
         for (int i = 0; i < topSets.size(); i++) {
             CardsAnalytics.SetMetric metric = topSets.get(i);
-            System.out.println((i + 1) + ". " + metric.getSetName() + " (" + metric.getTotalCount() + ")");
+            out.println((i + 1) + ". " + metric.getSetName() + " (" + metric.getTotalCount() + ")");
         }
     }
 
@@ -256,15 +264,15 @@ public class Ui {
 
     public void printTagUpdated(CardsList list, int index, String tag, String action) {
         printBorder();
-        System.out.println("I have " + toPastTense(action) + " tag \"" + tag + "\" for card " + (index + 1) + "!");
-        System.out.println(list.getCard(index));
+        out.println("I have " + toPastTense(action) + " tag \"" + tag + "\" for card " + (index + 1) + "!");
+        out.println(list.getCard(index));
         printBorder();
     }
 
     public void printTagNoChange(Card card, String tag, String action) {
         printBorder();
-        System.out.println("No tag change: \"" + tag + "\" was not " + toPastTense(action) + ".");
-        System.out.println(card);
+        out.println("No tag change: \"" + tag + "\" was not " + toPastTense(action) + ".");
+        out.println(card);
         printBorder();
     }
 
@@ -280,65 +288,65 @@ public class Ui {
 
     public void printUndoSuccess(CardsList list) {
         printBorder();
-        System.out.println("Undo Successful!");
+        out.println("Undo Successful!");
         printList(list);
     }
 
     public void printDownloadSuccess(Path path) {
         printBorder();
-        System.out.println("Saved current CardCollector data to: " + path);
+        out.println("Saved current CardCollector data to: " + path);
         printBorder();
     }
 
     public void printUploadSuccess(Path sourcePath, Path activePath) {
         printBorder();
-        System.out.println("Loaded CardCollector data from: " + sourcePath);
-        System.out.println("Active storage file remains: " + activePath);
-        System.out.println("Run \"undoupload\" to restore the previous session data.");
+        out.println("Loaded CardCollector data from: " + sourcePath);
+        out.println("Active storage file remains: " + activePath);
+        out.println("Run \"undoupload\" to restore the previous session data.");
         printBorder();
     }
 
     public boolean confirmUpload(Path sourcePath, Path activePath) {
         printBorder();
-        System.out.println("Warning: upload will replace your current inventory and wishlist.");
-        System.out.println("Imported file: " + sourcePath);
-        System.out.println("Your active save file will remain: " + activePath);
-        System.out.println("Type YES to continue or anything else to cancel.");
+        out.println("Warning: upload will replace your current inventory and wishlist.");
+        out.println("Imported file: " + sourcePath);
+        out.println("Your active save file will remain: " + activePath);
+        out.println("Type YES to continue or anything else to cancel.");
         printBorder();
         return "YES".equals(readInput());
     }
 
     public void printUploadCancelled() {
         printBorder();
-        System.out.println("Upload cancelled. Current data was not changed.");
+        out.println("Upload cancelled. Current data was not changed.");
         printBorder();
     }
 
     public void printUndoUploadSuccess(Path activePath) {
         printBorder();
-        System.out.println("Restored the data from before the last upload.");
-        System.out.println("Active storage file: " + activePath);
+        out.println("Restored the data from before the last upload.");
+        out.println("Active storage file: " + activePath);
         printBorder();
     }
 
     public void printNoUploadUndoAvailable() {
         printBorder();
-        System.out.println("No upload action is available to undo.");
+        out.println("No upload action is available to undo.");
         printBorder();
     }
 
     public void printStorageTransferError(String action, Path path, String errorMessage) {
         printBorder();
-        System.out.println("Failed to " + action + " storage file: " + path);
-        System.out.println(errorMessage);
+        out.println("Failed to " + action + " storage file: " + path);
+        out.println(errorMessage);
         printBorder();
     }
 
     private void printHistoryRecordCount(int originalSize, int maxLimitSize) {
         if (originalSize > maxLimitSize) {
-            System.out.printf(FORMAT_HISTORY_DISPLAY_N_RECORDS, maxLimitSize, originalSize);
+            out.printf(FORMAT_HISTORY_DISPLAY_N_RECORDS, maxLimitSize, originalSize);
         } else {
-            System.out.printf(FORMAT_HISTORY_DISPLAY_ALL_RECORDS, originalSize);
+            out.printf(FORMAT_HISTORY_DISPLAY_ALL_RECORDS, originalSize);
         }
     }
 
@@ -362,7 +370,7 @@ public class Ui {
                 Math.min(filteredHistoryList.size(), maxDisplayCount);
 
         if (filteredHistoryList.isEmpty()) {
-            System.out.printf(FORMAT_HISTORY_NO_RECORD);
+            out.printf(FORMAT_HISTORY_NO_RECORD);
         } else {
             printHistoryRecordCount(filteredHistoryList.size(), recordsLimit);
         }
@@ -391,7 +399,7 @@ public class Ui {
         int addedQuantity = entry.getChangedQuantity();
         String date = dateTimeFormatter.format(lastAdded);
 
-        System.out.printf(FORMAT_HISTORY_ADDED_RECORD, date, addedQuantity, current);
+        out.printf(FORMAT_HISTORY_ADDED_RECORD, date, addedQuantity, current);
     }
 
     private void printHistoryModifiedEntry(CardHistoryEntry entry,
@@ -412,7 +420,7 @@ public class Ui {
                         field.getKey(), field.getValue().previous(), field.getValue().current()))
                 .collect(Collectors.joining(", "));
 
-        System.out.printf(FORMAT_HISTORY_MODIFIED_RECORD, date, current, fieldsString);
+        out.printf(FORMAT_HISTORY_MODIFIED_RECORD, date, current, fieldsString);
     }
 
     private void printHistoryRemovedEntry(CardHistoryEntry entry,
@@ -428,7 +436,7 @@ public class Ui {
         int removedQuantity = -entry.getChangedQuantity();
         String date = dateTimeFormatter.format(lastRemoved);
 
-        System.out.printf(FORMAT_HISTORY_REMOVED_RECORD, date, removedQuantity, mostRecent);
+        out.printf(FORMAT_HISTORY_REMOVED_RECORD, date, removedQuantity, mostRecent);
     }
 
 }
