@@ -11,10 +11,26 @@ public class CardHistoryEntry {
     private final Card current;
 
     CardHistoryEntry(Card previous, Card current) {
-        assert previous != current : "Cards in history should not share the same reference";
+        if (previous != null && current != null) {
+            assert previous != current : "Cards in history should not share the same reference";
+        }
 
         this.previous = previous;
         this.current = current;
+
+        if (previous == null && current != null) {
+            // Indicates ADDED case irrespective of the quantity,
+            // even if the quantity is 0
+            this.cardHistoryType = CardHistoryType.ADDED;
+            return;
+        }
+
+        if (previous != null && current == null) {
+            // Indicates REMOVED case irrespective of the quantity,
+            // even if the quantity is originally 0
+            this.cardHistoryType = CardHistoryType.REMOVED;
+            return;
+        }
 
         int changedQuantity = getChangedQuantity();
         if (changedQuantity > 0) {
