@@ -7,10 +7,14 @@
       - [Architecture-level](#architecture-level)
       - [Implementation](#implementation-key-code-snippets)
       - [Sequence Diagram](#sequence-diagram-edit-1-n-dragonite-q-3)
-    - [Wishlist](#wishlist-feature)
+    - [Undo Feature](#undo-feature)
       - [Architecture-level](#architecture-level-1)
       - [Implementation](#implementation-key-code-snippets-1)
       - [Class Diagram](#class-diagram)
+    - [Wishlist](#wishlist-feature)
+      - [Architecture-level](#architecture-level-2)
+      - [Implementation](#implementation-key-code-snippets-2)
+      - [Class Diagram](#class-diagram-1)
     - [Product Scope](#product-scope)
       - [Target User Profile](#target-user-profile)
       - [Value Proposition](#value-proposition) 
@@ -116,7 +120,7 @@ public void printEdited(CardsList inventory, int index) {
 ```
 
 #### Sequence Diagram (`edit 1 /n Dragonite /q 3`)
-- ADD THE DIAGRAM 
+<img src="images/EditSequenceDiagram.svg" width="900" />
 
 **Design decisions**
 - Require **at least one** field to be edited (enforced in Parser).
@@ -126,6 +130,82 @@ public void printEdited(CardsList inventory, int index) {
 **Alternatives considered**
 - A single `UpdateFieldCommand` for every field — rejected (too many tiny classes).
 - Editing by name instead of index — rejected to keep consistency with `remove INDEX`.
+
+### Undo Feature
+
+The 'undo' command allows users to reverse the most recent reversible command by popping it from the `commandHistory` stack and calling its `undo(context)` method.
+Supported reversible commands: `AddCommand`, `EditCommand`, `RemoveCardByIndexCommand`, `RemoveCardbyNameCommand`
+
+#### Architecture-level
+
+1. `Parser` produces a `UndoCommand` and then `CardCollector` calls `execute(context)`
+2. `UndoCommand` retrieves the `commandHistory` stack from `context`. 
+   - If empty, it prints "Nothing to Undo" and returns immediately.
+   - Otherwise, it calls `history.pop()` to get the last reversible command and calls `lastCommand.undo(context)`
+3. The previous command performs its targeted reversal depending on the command to undo (refer to alt frames in sequence diagram).
+4. `ui.printUndoSuccess(list)` is called and `CommandResult(isExit=false)` is returned and `CardCollector` calls `storage.save()`
+
+#### Implementation (key code snippets)
+
+After a `Command` executes, `CardCollector` pushes it onto the `commandHistory` stack only if `isReversible()` is `true`. This stack is what `UndoCommand` pops from.
+
+In `CardCollector`:
+```java
+if (command.isReversible()) {
+    context.getCommandHistory().push(command);
+}
+```
+
+In `UndoCommand`:
+```java
+Command lastCommand = history.pop();
+return lastCommand.undo(context);
+```
+
+If the `lastCommand` was an:
+- `AddCommand`: branches on whether the original add was a merge or a new card entry.
+    ```java
+    if (wasMerged) {
+        Card existing = inventory.getCard(addedIndex);
+        int restoredQuantity = existing.getQuantity() - quantity;
+        inventory.editCard(addedIndex, null, restoredQuantity, null, null, null, null, null, null);
+    } else {
+        inventory.removeCardByIndex(addedIndex);
+    }
+    ```
+- `EditCommand`: saves old field values and sets isReversible only if something actually changes
+  ```java
+    this.oldName = card.getName();
+    this.oldQuantity = card.getQuantity();
+    // ...other fields...
+    boolean changed = inventory.editCard(targetIndex, newName, newQuantity, newPrice,
+            newCardSet, newRarity, newCondition, newLanguage, newCardNumber);
+    this.isReversible = changed;
+
+    if (changed) {
+        ui.printEdited(inventory, targetIndex);
+    } else {
+        ui.printNotEdited(inventory);
+    }
+    ```
+    `EditCommand.undo()` then restores all fields by calling `editCard` with the saved old values:
+    ```java
+    public CommandResult undo(CommandContext context) {
+    context.getTargetList().editCard(targetIndex, oldName, oldQuantity, oldPrice,
+            oldCardSet, oldRarity, oldCondition, oldLanguage, oldCardNumber);
+    ```
+- `RemoveCardByIndexCommand` or `RemoveCardByNameCommand`: saves the card and its index
+    ```java
+    this.removedCard = inventory.getCard(targetIndex);
+    this.removedIndex = targetIndex;
+    ```
+  `RemoveCardByIndexCommand.undo()` or `RemoveCardByNameCommand.undo()` then re-inserts the card at the same position
+    ```java
+  context.getTargetList().addCardAtIndex(removedIndex, removedCard);
+    ```
+
+#### Sequence Diagram
+<img src="images/UndoSequenceDiagram.svg" width="900" />
 
 ### Wishlist Feature
 
@@ -171,41 +251,10 @@ public void printList(CardsList list) {
 ```
 
 #### Class Diagram
-
-```plantuml
-@startuml
-class CardCollector {
-  - inventory : CardsList
-  - wishlist : CardsList
-  - ui : Ui
-  - parser : Parser
-}
-
-CardCollector --> CardsList : inventory
-CardCollector --> CardsList : wishlist
-CardsList --> Card
-@enduml
-```
+<img src="images/WishlistClassDiagram.svg" width="200"/>
 
 #### Sequence Diagram (`wishlist add` example)
-
-```plantuml
-@startuml
-actor User
-participant Ui
-participant CardCollector
-participant Parser
-participant AddCommand
-participant CardsList
-
-User -> Ui : "wishlist add /n Charizard /q 1 /p 99.99"
-Ui -> CardCollector : readInput()
-CardCollector -> Parser : parse("add /n Charizard /q 1 /p 99.99")
-Parser -> AddCommand ** : new AddCommand(...)
-CardCollector -> AddCommand : execute(ui, wishlist)
-AddCommand -> CardsList : addCard(newCard)
-@enduml
-```
+<img src="images/WishlistSequenceDiagram.svg" width="900" />
 
 **Design decisions**
 - Two separate `CardsList` objects inside `CardCollector` because behaviour is identical.

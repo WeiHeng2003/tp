@@ -1,0 +1,15 @@
+@startuml
+actor User
+participant Ui
+participant CardCollector
+participant Parser
+participant AddCommand
+participant CardsList
+
+User -> Ui : "wishlist add /n Charizard /q 1 /p 99.99"
+Ui -> CardCollector : readInput()
+CardCollector -> Parser : parse("add /n Charizard /q 1 /p 99.99")
+Parser -> AddCommand ** : new AddCommand(...)
+CardCollector -> AddCommand : execute(ui, wishlist)
+AddCommand -> CardsList : addCard(newCard)
+@enduml

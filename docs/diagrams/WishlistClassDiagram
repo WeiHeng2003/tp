@@ -1,0 +1,12 @@
+@startuml
+class CardCollector {
+  - inventory : CardsList
+  - wishlist : CardsList
+  - ui : Ui
+  - parser : Parser
+}
+
+CardCollector --> CardsList : inventory
+CardCollector --> CardsList : wishlist
+CardsList --> Card
+@enduml

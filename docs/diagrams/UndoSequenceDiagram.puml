@@ -1,0 +1,47 @@
+@startuml
+actor User
+participant CardCollector
+participant UndoCommand
+participant AddCommand
+participant EditCommand
+participant RemoveCardByIndexCommand
+participant RemoveCardByNameCommand
+participant CardsList
+
+User -> CardCollector : "undo"
+CardCollector -> UndoCommand : execute(context)
+UndoCommand -> UndoCommand : history = context.getCommandHistory()
+
+alt history is empty
+    UndoCommand -> CardCollector : ui.echo("Nothing to Undo.")
+
+else last command was AddCommand
+    UndoCommand -> AddCommand : undo(context)
+    alt wasMerged = true
+        AddCommand -> CardsList : editCard(addedIndex, restoredQty, ...)
+        note right : subtracts the added quantity\nfrom the existing card
+    else wasMerged = false
+        AddCommand -> CardsList : removeCardByIndex(addedIndex)
+        note right : deletes the newly added card
+    end
+
+else last command was EditCommand
+    UndoCommand -> EditCommand : undo(context)
+    EditCommand -> CardsList : editCard(targetIndex, oldName, oldQty, oldPrice, ...)
+    note right : restores all old field values\nsaved during execute()
+
+else last command was RemoveCardByIndexCommand
+    UndoCommand -> RemoveCardByIndexCommand : undo(context)
+    RemoveCardByIndexCommand -> CardsList : addCardAtIndex(targetIndex, removedCard)
+    note right : re-inserts saved card\nat its original position
+
+else last command was RemoveCardByNameCommand
+    UndoCommand -> RemoveCardByNameCommand : undo(context)
+    RemoveCardByNameCommand -> CardsList : addCardAtIndex(removedIndex, removedCard)
+    note right : re-inserts saved card\nat its original position
+end
+
+UndoCommand -> CardCollector : ui.printUndoSuccess(list)
+UndoCommand --> CardCollector : CommandResult(exit=false)
+note right of CardCollector : storage.save()
+@enduml

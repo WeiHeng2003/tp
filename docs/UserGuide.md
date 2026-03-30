@@ -212,24 +212,25 @@ Exits the application.
 
 ## Command Summary
 
-| Command | Description |
-|--------|------------|
-| `add /n NAME /q QTY /p PRICE` | Add card |
-| `edit INDEX [...]` | Edit card |
-| `compare INDEX1 INDEX2` | Compare cards |
-| `reorder CRITERIA [asc\|desc]` | Reorder list |
-| `removeindex INDEX` | Remove by index |
-| `removename NAME` | Remove by name |
-| `history [...]` | View history |
-| `tag add INDEX /t TAG` | Add tag/folder |
-| `tag remove INDEX /t TAG` | Remove tag/folder |
-| `wishlist acquired INDEX` | Move to inventory |
-| `analytics` | Show list insights |
-| `help [COMMAND]` | Show command help |
-| `download /f FILE_PATH` | Export data |
-| `upload /f FILE_PATH` | Import data |
-| `undoupload` | Undo upload |
-| `wishlist <command>` | Use wishlist |
-| `list [/t TAG]` | List cards |
-| `find [...]` | Search cards |
-| `bye` | Exit app |
+| Command                        | Description                          |
+|--------------------------------|--------------------------------------|
+| `add /n NAME /q QTY /p PRICE`  | Add card                             |
+| `edit INDEX [...]`             | Edit card                            |
+| `compare INDEX1 INDEX2`        | Compare cards                        |
+| `reorder CRITERIA [asc\|desc]` | Reorder list                         |
+| `removeindex INDEX`            | Remove by index                      |
+| `removename NAME`              | Remove by name                       |
+| `history [...]`                | View history                         |
+| `undo`                         | undo the most recent add/remove/edit |
+| `tag add INDEX /t TAG`         | Add tag/folder                       |
+| `tag remove INDEX /t TAG`      | Remove tag/folder                    |
+| `wishlist acquired INDEX`      | Move to inventory                    |
+| `analytics`                    | Show list insights                   |
+| `help [COMMAND]`               | Show command help                    |
+| `download /f FILE_PATH`        | Export data                          |
+| `upload /f FILE_PATH`          | Import data                          |
+| `undoupload`                   | Undo upload                          |
+| `wishlist <command>`           | Use wishlist                         |
+| `list [/t TAG]`                | List cards                           |
+| `find [...]`                   | Search cards                         |
+| `bye`                          | Exit app                             |
