@@ -36,7 +36,17 @@ The architecture of CardCollector consists of three main components:
 2. **`CardCollector`**: The main logic controller that parses user input and executes the appropriate commands.
 3. **`CardsList` & `Card`**: The data structures storing the inventory and individual card details, including timestamp history.
 
-To model the interactions that occur when the user issues the command `history added all`, below is a *Sequence Diagram* to illustrate it.
+### History Feature
+The history feature is a log of when cards were added, modified, or removed.
+It is not intended to represent command history, but rather a changelog of the cards in the inventory.
+
+#### History Command
+The `history` command displays the historical log that were generated when other commands were executed.
+As such, this command itself does not change or mutate any data.
+
+To model the interactions that occur when the user issues the command `history all added`, below is a *Sequence Diagram* to illustrate it.
+Some details related to UI input handling have been omitted for brevity.
+
 <img src="images/HistorySequenceDiagram.svg" width="550" />
 
 **Note:** The lifeline for `HistoryCommand` actually ends at the destroy marker (X), but due to a limitation in PlantUML, the dotted lifeline continues downwards.

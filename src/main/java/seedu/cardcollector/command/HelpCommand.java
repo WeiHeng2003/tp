@@ -70,9 +70,9 @@ public class HelpCommand extends Command {
                 "wishlist removename Charizard"
             }),
             new HelpTopic("history", List.of(), "show added, modified, or removed history entries", new String[] {
-                "history [added | modified | removed | entire] [NUMBER | all] [ascending | descending]",
+                "history [NUMBER | all] [added | modified | removed | entire] [ascending | descending]",
                 "history",
-                "history added 50 ascending"
+                "history 50 added ascending"
             }),
             new HelpTopic("wishlist", List.of(), "run a list-based command against the wishlist instead of inventory",
                     new String[] {

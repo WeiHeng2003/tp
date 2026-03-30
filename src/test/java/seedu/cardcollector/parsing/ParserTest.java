@@ -161,17 +161,17 @@ public class ParserTest {
 
         assertThrows(
                 ParseInvalidArgumentException.class,
-                () -> parser.parse("history added -1")
+                () -> parser.parse("history -1 added")
         );
 
         assertThrows(
                 ParseInvalidArgumentException.class,
-                () -> parser.parse("history added 3t35t45")
+                () -> parser.parse("history 3t35t45 added")
         );
 
         assertThrows(
                 ParseInvalidArgumentException.class,
-                () -> parser.parse("history added all zz")
+                () -> parser.parse("history all added zz")
         );
     }
 
@@ -185,25 +185,25 @@ public class ParserTest {
         Command command0 = parser.parse("history");
         assertInstanceOf(HistoryCommand.class, command0);
 
-        Command command1 = parser.parse("history added");
+        Command command1 = parser.parse("history all added");
         assertInstanceOf(HistoryCommand.class, command1);
 
-        Command command2 = parser.parse("history modified");
+        Command command2 = parser.parse("history all modified");
         assertInstanceOf(HistoryCommand.class, command2);
 
-        Command command3 = parser.parse("history removed");
+        Command command3 = parser.parse("history all removed");
         assertInstanceOf(HistoryCommand.class, command3);
 
-        Command command4 = parser.parse("history removed all");
+        Command command4 = parser.parse("history 5 removed");
         assertInstanceOf(HistoryCommand.class, command4);
 
-        Command command5 = parser.parse("history modified 5");
+        Command command5 = parser.parse("history 5 modified");
         assertInstanceOf(HistoryCommand.class, command5);
 
-        Command command6 = parser.parse("history entire 5 asc");
+        Command command6 = parser.parse("history 5 entire asc");
         assertInstanceOf(HistoryCommand.class, command6);
 
-        Command command7 = parser.parse("history entire 5 descend");
+        Command command7 = parser.parse("history 5 entire descend");
         assertInstanceOf(HistoryCommand.class, command7);
     }
 

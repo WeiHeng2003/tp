@@ -141,7 +141,7 @@ Removes the first exact case-insensitive name match.
 
 Displays a historical log of when cards were added, modified, or removed.
 
-**Format:** `history [added | modified | removed | entire] [NUMBER | all] [ascending | descending]`
+**Format:** `history [NUMBER | all] [added | modified | removed | entire] [ascending | descending]`
 
 - Arguments are optional, but if specified, they must be in order.
 - Argument matching is intentionally fuzzy for fast usage, an argument will be recognized as long as the prefix matches.
@@ -150,10 +150,10 @@ Displays a historical log of when cards were added, modified, or removed.
 - A 'removed' entry occurs when a card is removed, or when the edit command decreases the quantity of the card.
 
 **Examples:**
-`history added`
-`history removed all`
-`history added 50 ascending`
-`history a 50 a`
+`history all`
+`history all removed`
+`history 50 added ascending`
+`history 50 a a`
 
 ### Using the wishlist: `wishlist`
 

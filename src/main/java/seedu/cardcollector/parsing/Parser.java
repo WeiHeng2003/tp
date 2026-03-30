@@ -77,9 +77,9 @@ public class Parser {
     };
 
     private static final String[] USAGE_HISTORY_COMMAND = {
-        "history [added | modified | removed | entire] [NUMBER | all] [ascending | descending]",
+        "history [NUMBER | all] [added | modified | removed | entire] [ascending | descending]",
         "history",
-        "history added 50 ascending"
+        "history 50 added ascending"
     };
 
     private static final String[] USAGE_FIND_COMMAND = {
@@ -533,7 +533,7 @@ public class Parser {
 
     /**
      * Handles the "history" command by displaying different types of inventory change history.
-     * The argument format is [added | modified | removed | entire] [NUMBER | all] [ascending | descending]
+     * The argument format is [NUMBER | all] [added | modified | removed | entire] [ascending | descending]
      * All arguments are optional, but if provided, they must be in order.
      * Argument matching is intentionally fuzzy for fast usage, see Disambiguator class for more info.
      *
@@ -547,8 +547,8 @@ public class Parser {
         SplitTokenizer tokenizer = new SplitTokenizer(REGEX_WHITESPACES);
         tokenizer.tokenize(arguments);
 
-        String historyTypeString = tokenizer.getString(0);
-        String maxDisplayCountString = tokenizer.getString(1);
+        String maxDisplayCountString = tokenizer.getString(0);
+        String historyTypeString = tokenizer.getString(1);
         String isDescendingString = tokenizer.getString(2);
 
         int maxDisplayCount = getMaxDisplayCount(maxDisplayCountString, USAGE_HISTORY_COMMAND);
