@@ -261,22 +261,29 @@ public class Parser {
             );
         }
 
-        try {
-            String name = requireTextFlag(args, FLAG_NAME, ADD_FIELD_FLAGS);
-            int quantity = Integer.parseInt(requireTextFlag(args, FLAG_QUANTITY, ADD_FIELD_FLAGS));
-            float price = Float.parseFloat(requireTextFlag(args, FLAG_PRICE, ADD_FIELD_FLAGS));
-            String cardSet = optionalTextFlag(args, FLAG_SET, ADD_FIELD_FLAGS);
-            String rarity = optionalTextFlag(args, FLAG_RARITY, ADD_FIELD_FLAGS);
-            String condition = optionalTextFlag(args, FLAG_CONDITION, ADD_FIELD_FLAGS);
-            String language = optionalTextFlag(args, FLAG_LANGUAGE, ADD_FIELD_FLAGS);
-            String cardNumber = optionalTextFlag(args, FLAG_CARD_NUMBER, ADD_FIELD_FLAGS);
+        String name;
+        int quantity;
+        float price;
+        String cardSet;
+        String rarity;
+        String condition;
+        String language;
+        String cardNumber;
+        UUID uid = null;
 
-            UUID uid = null;
+        try {
+            name = requireTextFlag(args, FLAG_NAME, ADD_FIELD_FLAGS);
+            quantity = Integer.parseInt(requireTextFlag(args, FLAG_QUANTITY, ADD_FIELD_FLAGS));
+            price = Float.parseFloat(requireTextFlag(args, FLAG_PRICE, ADD_FIELD_FLAGS));
+            cardSet = optionalTextFlag(args, FLAG_SET, ADD_FIELD_FLAGS);
+            rarity = optionalTextFlag(args, FLAG_RARITY, ADD_FIELD_FLAGS);
+            condition = optionalTextFlag(args, FLAG_CONDITION, ADD_FIELD_FLAGS);
+            language = optionalTextFlag(args, FLAG_LANGUAGE, ADD_FIELD_FLAGS);
+            cardNumber = optionalTextFlag(args, FLAG_CARD_NUMBER, ADD_FIELD_FLAGS);
             String uidString = optionalTextFlag(args, FLAG_ID, ADD_FIELD_FLAGS);
             if (uidString != null) {
                 uid = UUID.fromString(uidString);
             }
-            return new AddCommand(uid, name, quantity, price, cardSet, rarity, condition, language, cardNumber);
         } catch (NumberFormatException e) {
             throw new ParseInvalidArgumentException(
                     "Quantity must be an integer and price must be float",
@@ -288,6 +295,22 @@ public class Parser {
                     USAGE_ADD_COMMAND
             );
         }
+
+        if (quantity < 0) {
+            throw new ParseInvalidArgumentException(
+                    "Quantity cannot be negative",
+                    USAGE_ADD_COMMAND
+            );
+        }
+
+        if (price < 0) {
+            throw new ParseInvalidArgumentException(
+                    "Price cannot be negative",
+                    USAGE_ADD_COMMAND
+            );
+        }
+
+        return new AddCommand(uid, name, quantity, price, cardSet, rarity, condition, language, cardNumber);
     }
 
     private Command handleRemoveByIndex(String args) throws ParseInvalidArgumentException {
@@ -583,10 +606,12 @@ public class Parser {
                 if (quantityText != null) {
                     quantity = Integer.parseInt(quantityText);
                 }
+
                 String priceText = optionalTextFlag(flagArgs, FLAG_PRICE, CARD_FIELD_FLAGS);
                 if (priceText != null) {
                     price = Float.parseFloat(priceText);
                 }
+
                 cardSet = optionalTextFlag(flagArgs, FLAG_SET, CARD_FIELD_FLAGS);
                 rarity = optionalTextFlag(flagArgs, FLAG_RARITY, CARD_FIELD_FLAGS);
                 condition = optionalTextFlag(flagArgs, FLAG_CONDITION, CARD_FIELD_FLAGS);
@@ -603,6 +628,20 @@ public class Parser {
                     USAGE_EDIT_COMMAND
                 );
             }
+        }
+
+        if (quantity != null && quantity < 0) {
+            throw new ParseInvalidArgumentException(
+                    "Quantity cannot be negative",
+                    USAGE_EDIT_COMMAND
+            );
+        }
+
+        if (price != null && price < 0) {
+            throw new ParseInvalidArgumentException(
+                    "Price cannot be negative",
+                    USAGE_EDIT_COMMAND
+            );
         }
 
         if (name == null && quantity == null && price == null

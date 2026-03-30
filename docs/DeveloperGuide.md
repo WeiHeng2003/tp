@@ -304,6 +304,11 @@ Expected: A new card is added into the list, with the corresponding name, quanti
 Expected: No card added. Error details shows missing required flags. 
 3. Test case: `add /nCharizard/q1/p2.2`  
 Expected: No card added. Error details shows invalid add format.
+4. Test case : `add /n Mewtwo /q -1 /p 5.50`  
+Expected: No card added. Error details shows quantity cannot be negative
+5. Test case : `add /n Mewtwo /q 1 /p -5.50`  
+   Expected: No card added. Error details shows price cannot be negative
+
 
 ### Undo a add/remove/edit
 1. Prerequisites: A add/remove/edit command must be entered before this
