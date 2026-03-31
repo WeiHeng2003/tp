@@ -23,11 +23,6 @@ public class CardsList {
     }
 
     public void addCard(Card newCard) {
-        if (newCard == null) {
-            System.out.println("seedu.cardcollector.Card not found!");
-            return;
-        }
-
         assert newCard != null : "new card added should not be null";
 
         Instant currentInstant = Instant.now();
