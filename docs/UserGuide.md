@@ -87,7 +87,7 @@ Displays all cards in the current list in a sorted order.
 - Arguments are optional, but if specified, they must be in order.
 - Argument matching is intentionally fuzzy for fast usage.
 
-### Filter cards: `filter`
+### Filtering cards: `filter`
 
 Displays only cards in the current list that are filtered by tag.
 
@@ -234,17 +234,18 @@ Exits the application.
 | `reorder CRITERIA [asc\|desc]` | Reorder list                         |
 | `removeindex INDEX`            | Remove by index                      |
 | `removename NAME`              | Remove by name                       |
-| `history [...]`                | View history                         |
-| `undo`                         | undo the most recent add/remove/edit |
+| `undo`                         | Undo the most recent add/remove/edit |
 | `tag add INDEX /t TAG`         | Add tag/folder                       |
 | `tag remove INDEX /t TAG`      | Remove tag/folder                    |
 | `wishlist acquired INDEX`      | Move to inventory                    |
+| `list [...]`                   | List cards                           |
+| `filter /t TAG`                | Filter cards                         |
 | `analytics`                    | Show list insights                   |
 | `help [COMMAND]`               | Show command help                    |
 | `download /f FILE_PATH`        | Export data                          |
 | `upload /f FILE_PATH`          | Import data                          |
 | `undoupload`                   | Undo upload                          |
+| `history [...]`                | View history                         |
 | `wishlist <command>`           | Use wishlist                         |
-| `list [/t TAG]`                | List cards                           |
 | `find [...]`                   | Search cards                         |
 | `bye`                          | Exit app                             |
