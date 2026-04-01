@@ -60,8 +60,6 @@
 - Base structure adapted from AddressBook-Level3:
   https://github.com/se-edu/addressbook-level3
 
-{list here sources of all reused/adapted ideas, code, documentation, and third-party libraries -- include links to the original source as well}
-
 ## Design & implementation
 
 The architecture of CardCollector consists of three main components:
@@ -412,11 +410,13 @@ for (Card card : cards) {
     totalQuantity += card.getQuantity();
     totalValue += card.getPrice() * card.getQuantity();
 
-    String normalizedSetName = normalizeSetName(card.getCardSet());
-    setCounts.merge(normalizedSetName, card.getQuantity(), Integer::sum);
-    setValues.merge(normalizedSetName,
-        (double) card.getPrice() * card.getQuantity(),
-        Double::sum);
+    if (card.getCardSet() != null && !card.getCardSet().isBlank()) {
+        String normalizedSetName = normalizeSetName(card.getCardSet());
+        setCounts.merge(normalizedSetName, card.getQuantity(), Integer::sum);
+        setValues.merge(normalizedSetName,
+            (double) card.getPrice() * card.getQuantity(),
+            Double::sum);
+    }
 }
 ```
 

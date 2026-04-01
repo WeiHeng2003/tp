@@ -1,134 +1,33 @@
 # CardCollector
 
-**CardCollector** is a lightweight, command-line application built for trading card enthusiasts to manage their collections quickly and efficiently.
+**CardCollector** is a lightweight command-line application designed for trading card enthusiasts to manage their collections quickly and efficiently.
 
-If you prefer typing over clicking, CardCollector allows you to track the cards you own, search your inventory using complex attributes, and monitor your collection's history—all from the comfort of your terminal.
+If you prefer typing over clicking, CardCollector allows you to track the cards you own, organise them with tags, search using multiple attributes, and monitor your collection history — all from your terminal.
 
----
+## Key Features
 
-## 🚀 Features
+* **Inventory Management**: Add and remove cards by index or name.
+* **Granular Tracking**: Track detailed card attributes such as name, price, quantity, set, rarity, condition, language, and notes.
+* **Advanced Search & Filtering**: Filter your inventory using multiple attributes (name, price, quantity, set, tags, etc.).
+* **Advanced Analytics**: Gain insights into your collection with:
 
-* **Inventory Management**
-  Add, edit, and remove cards by index or name.
+  * Total value and averages
+  * Top expensive cards
+  * Top cards by total holding value (price × quantity)
+  * Cheapest cards
+  * Set-based analytics (by count and value)
+  * Price distribution breakdown
+  * Metadata coverage (notes and set information)
+* **History Logs**: View timestamps of when cards were added, modified, or removed.
 
-* **Granular Tracking**
-  Track card names, prices, quantities, and tags.
+## Quick Start
 
-* **Advanced Search & Filtering**
-  Filter your inventory using combinations of attributes such as:
+1. Ensure that Java 17 or above is installed.
+2. Run `./gradlew run` from the project root.
+3. Enter commands in the terminal.
 
-    * Name
-    * Price
-    * Quantity
-
-* **Wishlist Support**
-  Maintain a separate wishlist for cards you plan to acquire.
-
-* **History Logs**
-  View timestamps of when cards were added, modified, or removed.
-
-* **Data Persistence**
-  Your data is automatically saved and loaded between sessions.
-
----
-
-## 🛠️ Getting Started
-
-### Prerequisites
-
-* Java 17 (or later)
-* Gradle (if running manually)
-
-### Running the Application
-
-```bash
-./gradlew run
-```
-
-### Running Tests
-
-```bash
-./gradlew test
-```
-
----
-
-## 💡 Example Usage
-
-```bash
-add n/Pikachu p/10 q/2
-list
-find n/Pikachu
-delete 1
-```
-
----
-
-## 📂 Project Structure
-
-```plaintext
-src/
- ├── main/java/seedu/cardcollector
- │   ├── command        # Command logic
- │   ├── parsing        # Input parsing
- │   ├── card           # Card models
- │   ├── storage        # File handling
- │   └── ui             # User interface
- └── test/java/seedu/cardcollector
-     ├── command        # Command tests
-     ├── parsing        # Parser tests
-     └── card           # Model tests
-```
-
----
-
-## 🧪 Testing
-
-CardCollector includes unit tests for:
-
-* Commands
-* Parsing logic
-* Core data structures
-
-To run all tests:
-
-```bash
-./gradlew test
-```
-
----
-
-## ⚠️ Known Limitations
-
-* CLI-only interface (no GUI)
-* Limited support for bulk operations
-* Input must follow strict command format
-
----
-
-## 🔮 Future Improvements
-
-* GUI version
-* Import/export enhancements
-* More analytics features
-* Better error handling and suggestions
-
----
-
-## 📖 Documentation
+## Useful Links
 
 * [User Guide](docs/UserGuide.md)
 * [Developer Guide](docs/DeveloperGuide.md)
 * [About Us](docs/AboutUs.md)
-
----
-
-## 👥 Team
-
-See the [About Us](docs/AboutUs.md) page for details about contributors.
-
----
-
-## 📄 License
-
-This project is developed for educational purposes.
