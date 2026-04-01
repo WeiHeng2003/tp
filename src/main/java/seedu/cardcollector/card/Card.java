@@ -17,6 +17,7 @@ public class Card {
     private String condition;
     private String language;
     private String cardNumber;
+    private String note;
     private LinkedHashSet<String> tags;
     private Instant lastAdded = null;    // lastAdded is a nullable type
     private Instant lastModified = null; // lastModified is a nullable type
@@ -32,6 +33,7 @@ public class Card {
         this.condition = builder.condition;
         this.language = builder.language;
         this.cardNumber = builder.cardNumber;
+        this.note = builder.note;
         this.tags = new LinkedHashSet<>(builder.tags);
         this.lastAdded = builder.lastAdded;
         this.lastModified = builder.lastModified;
@@ -48,6 +50,7 @@ public class Card {
         private String condition;
         private String language;
         private String cardNumber;
+        private String note;
         private LinkedHashSet<String> tags = new LinkedHashSet<>();
         private Instant lastAdded;
         private Instant lastModified;
@@ -95,6 +98,11 @@ public class Card {
 
         public Builder cardNumber(String cardNumber) {
             this.cardNumber = cardNumber;
+            return this;
+        }
+
+        public Builder note(String note) {
+            this.note = note;
             return this;
         }
 
@@ -216,6 +224,14 @@ public class Card {
         this.cardNumber = cardNumber;
     }
 
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public LinkedHashSet<String> getTags() {
         return new LinkedHashSet<>(tags);
     }
@@ -298,6 +314,7 @@ public class Card {
                 .condition(condition)
                 .language(language)
                 .cardNumber(cardNumber)
+                .note(note)
                 .tags(tags)
                 .lastAdded(lastAdded)
                 .lastModified(lastModified)
@@ -320,6 +337,7 @@ public class Card {
         appendMetadata(builder, "Language", language);
         appendMetadata(builder, "Card No.", cardNumber);
         appendMetadata(builder, "Tags", formatTags(tags));
+        appendMetadata(builder, "Note", note);
 
         return builder.toString();
     }

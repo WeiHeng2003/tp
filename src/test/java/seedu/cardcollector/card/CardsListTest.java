@@ -46,9 +46,9 @@ public class CardsListTest {
                 .quantity(3)
                 .build());
 
-        // Case-insensitive and partial match for "pika"
-        ArrayList<Card> results = cardsList.findCards("pika", null, null, null, null, null, null, null, null);
-        
+        ArrayList<Card> results = cardsList.findCards(
+                "pika", null, null, null, null, null, null, null, null, null);
+
         assertEquals(2, results.size());
         assertEquals("Pikachu", results.get(0).getName());
         assertEquals("Pikachu VMAX", results.get(1).getName());
@@ -69,9 +69,9 @@ public class CardsListTest {
                 .quantity(2)
                 .build());
 
-        // Exact price match
-        ArrayList<Card> results = cardsList.findCards(null, 10.00f, null, null, null, null, null, null, null);
-        
+        ArrayList<Card> results = cardsList.findCards(
+                null, null, 10.00f, null, null, null, null, null, null, null);
+
         assertEquals(1, results.size());
         assertEquals("Charizard", results.get(0).getName());
     }
@@ -91,9 +91,9 @@ public class CardsListTest {
                 .quantity(1)
                 .build());
 
-        // Exact quantity match
-        ArrayList<Card> results = cardsList.findCards(null, null, 5, null, null, null, null, null, null);
-        
+        ArrayList<Card> results = cardsList.findCards(
+                null, 5, null, null, null, null, null, null, null, null);
+
         assertEquals(1, results.size());
         assertEquals("Bulbasaur", results.get(0).getName());
     }
@@ -118,9 +118,9 @@ public class CardsListTest {
                 .quantity(3)
                 .build());
 
-        // Matches both Name (contains "Mew") AND Quantity (exactly 3)
-        ArrayList<Card> results = cardsList.findCards("Mew", null, 3, null, null, null, null, null, null);
-        
+        ArrayList<Card> results = cardsList.findCards(
+                "Mew", 3, null, null, null, null, null, null, null, null);
+
         assertEquals(2, results.size());
         assertEquals(20.00f, results.get(0).getPrice());
         assertEquals(15.00f, results.get(1).getPrice());
@@ -136,9 +136,9 @@ public class CardsListTest {
                 .quantity(1)
                 .build());
 
-        // Searching for attributes that don't exist
-        ArrayList<Card> results = cardsList.findCards("Snorlax", 100.00f, null, null, null, null, null, null, null);
-        
+        ArrayList<Card> results = cardsList.findCards(
+                "Snorlax", null, 100.00f, null, null, null, null, null, null, null);
+
         assertEquals(0, results.size());
     }
 
@@ -153,14 +153,14 @@ public class CardsListTest {
                 .build();
         cardsList.addCard(original);
 
-        // partial edit (only name + quantity)
-        cardsList.editCard(0, "Pikachu VMAX", 5, null, null, null, null, null, null);
+        cardsList.editCard(0, "Pikachu VMAX", 5, null,
+                null, null, null, null, null, null);
         assertEquals("Pikachu VMAX", cardsList.getCard(0).getName());
         assertEquals(5, cardsList.getCard(0).getQuantity());
-        assertEquals(5.50f, cardsList.getCard(0).getPrice()); // price unchanged
+        assertEquals(5.50f, cardsList.getCard(0).getPrice());
 
-        // full edit
-        cardsList.editCard(0, "Charizard", 10, 25.0f, null, null, null, null, null);
+        cardsList.editCard(0, "Charizard", 10, 25.0f,
+                null, null, null, null, null, null);
         assertEquals("Charizard", cardsList.getCard(0).getName());
         assertEquals(10, cardsList.getCard(0).getQuantity());
         assertEquals(25.0f, cardsList.getCard(0).getPrice());
@@ -192,7 +192,7 @@ public class CardsListTest {
                 .build());
 
         ArrayList<Card> results = cardsList.findCards(
-                null, null, null, "base", "rare", "near", "english", "58/102", null);
+                null, null, null, "base", "rare", "near", "english", "58/102", null, null);
 
         assertEquals(1, results.size());
         assertEquals("Base Set", results.get(0).getCardSet());
@@ -217,7 +217,7 @@ public class CardsListTest {
         assertTrue(cardsList.getCard(0).hasTag("DECK"));
 
         ArrayList<Card> taggedResults = cardsList.findCards(
-                null, null, null, null, null, null, null, null, "deck");
+                null, null, null, null, null, null, null, null, null, "deck");
         assertEquals(1, taggedResults.size());
         assertEquals("Pikachu", taggedResults.get(0).getName());
 
@@ -226,11 +226,128 @@ public class CardsListTest {
     }
 
     @Test
+    public void findCards_byNote_success() {
+        CardsList cardsList = new CardsList();
+
+        cardsList.addCard(new Card.Builder()
+                .name("Pikachu")
+                .price(5.50f)
+                .quantity(1)
+                .note("childhood favorite")
+                .build());
+
+        cardsList.addCard(new Card.Builder()
+                .name("Charizard")
+                .price(20.00f)
+                .quantity(1)
+                .note("trade binder")
+                .build());
+
+        ArrayList<Card> results = cardsList.findCards(
+                null, null, null, null, null, null, null, null, "favorite", null);
+
+        assertEquals(1, results.size());
+        assertEquals("Pikachu", results.get(0).getName());
+    }
+
+    @Test
+    public void editCard_note_success() {
+        CardsList cardsList = new CardsList();
+
+        cardsList.addCard(new Card.Builder()
+                .name("Bulbasaur")
+                .price(3.00f)
+                .quantity(1)
+                .note("starter")
+                .build());
+
+        boolean changed = cardsList.editCard(
+                0, null, null, null, null, null, null, null, null, "starter deck");
+
+        assertTrue(changed);
+        assertEquals("starter deck", cardsList.getCard(0).getNote());
+    }
+
+    @Test
+    public void getDuplicateCards_success() {
+        CardsList cardsList = new CardsList();
+
+        cardsList.addCard(new Card.Builder()
+                .name("Eevee")
+                .price(4.00f)
+                .quantity(2)
+                .build());
+
+        cardsList.addCard(new Card.Builder()
+                .name("Mew")
+                .price(30.00f)
+                .quantity(1)
+                .build());
+
+        cardsList.addCard(new Card.Builder()
+                .name("Squirtle")
+                .price(3.00f)
+                .quantity(3)
+                .build());
+
+        ArrayList<Card> duplicates = cardsList.getDuplicateCards();
+
+        assertEquals(2, duplicates.size());
+        assertEquals("Eevee", duplicates.get(0).getName());
+        assertEquals("Squirtle", duplicates.get(1).getName());
+    }
+
+    @Test
+    public void addCard_sameCardDifferentNote_doesNotMerge() {
+        CardsList cardsList = new CardsList();
+
+        cardsList.addCard(new Card.Builder()
+                .name("Pikachu")
+                .price(5.50f)
+                .quantity(1)
+                .note("gift")
+                .build());
+
+        cardsList.addCard(new Card.Builder()
+                .name("Pikachu")
+                .price(5.50f)
+                .quantity(1)
+                .note("trade")
+                .build());
+
+        assertEquals(2, cardsList.getSize());
+        assertEquals("gift", cardsList.getCard(0).getNote());
+        assertEquals("trade", cardsList.getCard(1).getNote());
+    }
+
+    @Test
+    public void addCard_sameCardSameNote_merges() {
+        CardsList cardsList = new CardsList();
+
+        cardsList.addCard(new Card.Builder()
+                .name("Charmander")
+                .price(6.00f)
+                .quantity(1)
+                .note("binder")
+                .build());
+
+        cardsList.addCard(new Card.Builder()
+                .name("Charmander")
+                .price(6.00f)
+                .quantity(2)
+                .note("binder")
+                .build());
+
+        assertEquals(1, cardsList.getSize());
+        assertEquals(3, cardsList.getCard(0).getQuantity());
+        assertEquals("binder", cardsList.getCard(0).getNote());
+    }
+
+    @Test
     public void inventoryAndWishlistAreIndependent_success() {
         CardsList inventory = new CardsList();
         CardsList wishlist = new CardsList();
 
-        // Add to inventory only
         Card invCard = new Card.Builder()
                 .name("Pikachu")
                 .price(5.5f)
@@ -238,7 +355,6 @@ public class CardsListTest {
                 .build();
         inventory.addCard(invCard);
 
-        // Add to wishlist only
         Card wishCard = new Card.Builder()
                 .name("Charizard")
                 .price(99.99f)
@@ -246,13 +362,11 @@ public class CardsListTest {
                 .build();
         wishlist.addCard(wishCard);
 
-        // Verify separation
         assertEquals(1, inventory.getSize());
         assertEquals(1, wishlist.getSize());
         assertEquals("Pikachu", inventory.getCard(0).getName());
         assertEquals("Charizard", wishlist.getCard(0).getName());
 
-        // Remove from one doesn't affect the other
         inventory.removeCardByIndex(0);
         assertEquals(0, inventory.getSize());
         assertEquals(1, wishlist.getSize());
@@ -276,7 +390,6 @@ public class CardsListTest {
         cardsList.addCard(card1);
         cardsList.addCard(card2);
 
-        // Verify cards can be retrieved for comparison (same style as edit test)
         assertEquals("Pikachu | Quantity: 1 | Price: 5.5", cardsList.getCard(0).toString());
         assertEquals("Charizard | Quantity: 1 | Price: 99.99", cardsList.getCard(1).toString());
     }
@@ -293,7 +406,6 @@ public class CardsListTest {
                 .build();
         wishlist.addCard(wishCard);
 
-        // Simulate acquired behaviour
         int index = 0;
         Card card = wishlist.getCard(index);
         wishlist.removeCardByIndex(index);
@@ -414,34 +526,29 @@ public class CardsListTest {
         Card card0 = new Card.Builder().name("Zero").price(5.0f).quantity(1).build();
         Card card1 = new Card.Builder().name("One").price(15.0f).quantity(5).build();
 
-        // Add various cards
         cardsList.addCard(card0);
         cardsList.addCard(card1);
 
-        // Remove a card entirely
         cardsList.removeCardByIndex(1);
 
-        // Edit name of the card only
-        cardsList.editCard(0, "Zero noro", null, null, null, null, null, null, null);
+        cardsList.editCard(0, "Zero noro", null, null,
+                null, null, null, null, null, null);
 
-        // Edit quantity (from 1 to 5) of the card only
-        cardsList.editCard(0, null, 5, null, null, null, null, null, null);
+        cardsList.editCard(0, null, 5, null,
+                null, null, null, null, null, null);
 
-        // Edit quantity (from 5 to 4) of the card only
-        cardsList.editCard(0, null, 4, null, null, null, null, null, null);
+        cardsList.editCard(0, null, 4, null,
+                null, null, null, null, null, null);
 
-        // Edit quantity (from 4 to 4) of the card only,
-        // but actually quantity was not changed
-        cardsList.editCard(0, null, 4, null, null, null, null, null, null);
+        cardsList.editCard(0, null, 4, null,
+                null, null, null, null, null, null);
 
-        // Edit quantity (from 4 to 3) of the card,
-        // at the same time change its price
-        cardsList.editCard(0, null, 3, 9.99f, null, null, null, null, null);
+        cardsList.editCard(0, null, 3, 9.99f,
+                null, null, null, null, null, null);
 
         CardsHistory history = cardsList.getHistory();
         ArrayList<CardHistoryEntry> historyList = history.getSortedHistoryList(false);
 
-        // Now check whether the history is correct
         assertEquals(CardHistoryType.ADDED, historyList.get(0).getCardHistoryType());
         assertEquals(card0.getUid(), historyList.get(0).getMostRecent().getUid());
 
@@ -467,4 +574,205 @@ public class CardsListTest {
         assertEquals(9.99f, historyList.get(7).getMostRecent().getPrice());
     }
     //@@author
+
+    @Test
+    public void findCards_byNote_noMatch() {
+        CardsList cardsList = new CardsList();
+
+        cardsList.addCard(new Card.Builder()
+                .name("Pikachu")
+                .price(5.0f)
+                .quantity(1)
+                .note("starter deck")
+                .build());
+
+        ArrayList<Card> results = cardsList.findCards(
+                null, null, null, null, null, null, null, null, "legendary", null);
+
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    public void findCards_byNoteAndTag_success() {
+        CardsList cardsList = new CardsList();
+
+        Card card1 = new Card.Builder()
+                .name("Pikachu")
+                .price(5.0f)
+                .quantity(1)
+                .note("trade binder")
+                .build();
+        card1.addTag("trade");
+
+        Card card2 = new Card.Builder()
+                .name("Charizard")
+                .price(50.0f)
+                .quantity(1)
+                .note("trade binder")
+                .build();
+        card2.addTag("display");
+
+        cardsList.addCard(card1);
+        cardsList.addCard(card2);
+
+        ArrayList<Card> results = cardsList.findCards(
+                null, null, null, null, null, null, null, null, "trade", "trade");
+
+        assertEquals(1, results.size());
+        assertEquals("Pikachu", results.get(0).getName());
+    }
+
+    @Test
+    public void editCard_noteFromNull_success() {
+        CardsList cardsList = new CardsList();
+
+        cardsList.addCard(new Card.Builder()
+                .name("Bulbasaur")
+                .price(3.0f)
+                .quantity(1)
+                .build());
+
+        boolean changed = cardsList.editCard(
+                0, null, null, null, null, null, null, null, null, "new note");
+
+        assertTrue(changed);
+        assertEquals("new note", cardsList.getCard(0).getNote());
+    }
+
+    @Test
+    public void editCard_noteSameValue_noChange() {
+        CardsList cardsList = new CardsList();
+
+        cardsList.addCard(new Card.Builder()
+                .name("Bulbasaur")
+                .price(3.0f)
+                .quantity(1)
+                .note("starter")
+                .build());
+
+        boolean changed = cardsList.editCard(
+                0, null, null, null, null, null, null, null, null, "starter");
+
+        assertFalse(changed);
+    }
+
+    @Test
+    public void editCard_clearNote_success() {
+        CardsList cardsList = new CardsList();
+
+        cardsList.addCard(new Card.Builder()
+                .name("Squirtle")
+                .price(4.0f)
+                .quantity(1)
+                .note("water type")
+                .build());
+
+        boolean changed = cardsList.editCard(
+                0, null, null, null, null, null, null, null, null, "");
+
+        assertTrue(changed);
+        assertEquals(null, cardsList.getCard(0).getNote());
+    }
+
+    @Test
+    public void getDuplicateCards_emptyList_returnsEmptyList() {
+        CardsList cardsList = new CardsList();
+
+        ArrayList<Card> duplicates = cardsList.getDuplicateCards();
+
+        assertTrue(duplicates.isEmpty());
+    }
+
+    @Test
+    public void getDuplicateCards_noDuplicates_returnsEmptyList() {
+        CardsList cardsList = new CardsList();
+
+        cardsList.addCard(new Card.Builder().name("A").price(1.0f).quantity(1).build());
+        cardsList.addCard(new Card.Builder().name("B").price(2.0f).quantity(1).build());
+
+        ArrayList<Card> duplicates = cardsList.getDuplicateCards();
+
+        assertTrue(duplicates.isEmpty());
+    }
+
+    @Test
+    public void getDuplicateCards_singleDuplicate_success() {
+        CardsList cardsList = new CardsList();
+
+        cardsList.addCard(new Card.Builder().name("Eevee").price(4.0f).quantity(2).build());
+        cardsList.addCard(new Card.Builder().name("Mew").price(30.0f).quantity(1).build());
+
+        ArrayList<Card> duplicates = cardsList.getDuplicateCards();
+
+        assertEquals(1, duplicates.size());
+        assertEquals("Eevee", duplicates.get(0).getName());
+    }
+
+    @Test
+    public void addCard_sameCardDifferentTagStillMerges_whenNoteSame() {
+        CardsList cardsList = new CardsList();
+
+        Card card1 = new Card.Builder()
+                .name("Charmander")
+                .price(6.0f)
+                .quantity(1)
+                .note("binder")
+                .build();
+        card1.addTag("trade");
+
+        Card card2 = new Card.Builder()
+                .name("Charmander")
+                .price(6.0f)
+                .quantity(2)
+                .note("binder")
+                .build();
+        card2.addTag("display");
+
+        cardsList.addCard(card1);
+        cardsList.addCard(card2);
+
+        assertEquals(1, cardsList.getSize());
+        assertEquals(3, cardsList.getCard(0).getQuantity());
+    }
+
+    @Test
+    public void findCards_byTagNoMatch_returnsEmptyList() {
+        CardsList cardsList = new CardsList();
+
+        Card card = new Card.Builder()
+                .name("Pikachu")
+                .price(5.0f)
+                .quantity(1)
+                .build();
+        card.addTag("deck");
+        cardsList.addCard(card);
+
+        ArrayList<Card> results = cardsList.findCards(
+                null, null, null, null, null, null, null, null, null, "rare");
+
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    public void deepCopy_wishlistFlag_preserved() {
+        CardsList wishlist = new CardsList();
+        wishlist.setWishlist(true);
+
+        CardsList copy = wishlist.deepCopy();
+
+        assertTrue(copy.isWishlist());
+    }
+
+    @Test
+    public void replaceWith_wishlistFlag_preserved() {
+        CardsList source = new CardsList();
+        source.setWishlist(true);
+
+        CardsList target = new CardsList();
+        target.setWishlist(false);
+
+        target.replaceWith(source);
+
+        assertTrue(target.isWishlist());
+    }
 }

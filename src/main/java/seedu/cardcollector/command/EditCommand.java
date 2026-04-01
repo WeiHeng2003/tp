@@ -13,6 +13,7 @@ public class EditCommand extends Command {
     private final String newCondition;
     private final String newLanguage;
     private final String newCardNumber;
+    private final String newNote;
 
     private String oldName;
     private Integer oldQuantity;
@@ -22,9 +23,11 @@ public class EditCommand extends Command {
     private String oldCondition;
     private String oldLanguage;
     private String oldCardNumber;
+    private String oldNote;
 
     public EditCommand(int targetIndex, String newName, Integer newQuantity, Float newPrice,
-            String newCardSet, String newRarity, String newCondition, String newLanguage, String newCardNumber) {
+                       String newCardSet, String newRarity, String newCondition,
+                       String newLanguage, String newCardNumber, String newNote) {
         this.targetIndex = targetIndex;
         this.newName = newName;
         this.newQuantity = newQuantity;
@@ -34,6 +37,7 @@ public class EditCommand extends Command {
         this.newCondition = newCondition;
         this.newLanguage = newLanguage;
         this.newCardNumber = newCardNumber;
+        this.newNote = newNote;
         this.isReversible = true;
     }
 
@@ -55,9 +59,10 @@ public class EditCommand extends Command {
         this.oldCondition = card.getCondition();
         this.oldLanguage = card.getLanguage();
         this.oldCardNumber = card.getCardNumber();
+        this.oldNote = card.getNote();
 
         boolean changed = inventory.editCard(targetIndex, newName, newQuantity, newPrice,
-                newCardSet, newRarity, newCondition, newLanguage, newCardNumber);
+                newCardSet, newRarity, newCondition, newLanguage, newCardNumber, newNote);
         this.isReversible = changed;
 
         if (changed) {
@@ -71,7 +76,7 @@ public class EditCommand extends Command {
     @Override
     public CommandResult undo(CommandContext context) {
         context.getTargetList().editCard(targetIndex, oldName, oldQuantity, oldPrice,
-                oldCardSet, oldRarity, oldCondition, oldLanguage, oldCardNumber);
+                oldCardSet, oldRarity, oldCondition, oldLanguage, oldCardNumber, oldNote);
         context.getUi().printUndoSuccess(context.getTargetList());
         return new CommandResult(false);
     }

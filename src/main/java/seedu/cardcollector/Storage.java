@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class Storage {
+    private static final String FILE_HEADER_V5 = "CARDCOLLECTOR_STORAGE_V5";
     private static final String FILE_HEADER_V4 = "CARDCOLLECTOR_STORAGE_V4";
     private static final String FILE_HEADER_V3 = "CARDCOLLECTOR_STORAGE_V3";
     private static final String FILE_HEADER_V2 = "CARDCOLLECTOR_STORAGE_V2";
@@ -77,7 +78,7 @@ public class Storage {
         }
 
         ArrayList<String> lines = new ArrayList<>();
-        lines.add(FILE_HEADER_V4);
+        lines.add(FILE_HEADER_V5);
         appendSection(lines, "inventory", state.getInventory().getCards());
         appendSection(lines, "inventory_history", state.getInventory().getHistory().getFlattenedCards());
         appendSection(lines, "wishlist", state.getWishlist().getCards());
@@ -122,6 +123,7 @@ public class Storage {
                 serializeText(card.getCondition()),
                 serializeText(card.getLanguage()),
                 serializeText(card.getCardNumber()),
+                serializeText(card.getNote()),
                 serializeTags(card.getTags()),
                 serializeInstant(card.getLastAdded()),
                 serializeInstant(card.getLastModified()),
@@ -134,7 +136,7 @@ public class Storage {
         }
 
         String[] parts = line.split("\t", -1);
-        if (parts.length != 7 && parts.length != 12 && parts.length != 13) {
+        if (parts.length != 7 && parts.length != 12 && parts.length != 13 && parts.length != 14) {
             throw new IOException("Malformed card record");
         }
 
@@ -143,15 +145,23 @@ public class Storage {
             String name = new String(Base64.getDecoder().decode(parts[1]), StandardCharsets.UTF_8);
             int quantity = Integer.parseInt(parts[2]);
             float price = Float.parseFloat(parts[3]);
+
             String cardSet = parts.length >= 12 ? parseText(parts[4]) : null;
             String rarity = parts.length >= 12 ? parseText(parts[5]) : null;
             String condition = parts.length >= 12 ? parseText(parts[6]) : null;
             String language = parts.length >= 12 ? parseText(parts[7]) : null;
             String cardNumber = parts.length >= 12 ? parseText(parts[8]) : null;
-            java.util.LinkedHashSet<String> tags = parts.length == 13
+
+            String note = parts.length == 14 ? parseText(parts[9]) : null;
+
+            java.util.LinkedHashSet<String> tags = parts.length == 14
+                    ? parseTags(parts[10])
+                    : parts.length == 13
                     ? parseTags(parts[9])
                     : new java.util.LinkedHashSet<>();
-            int instantStartIndex = parts.length == 13 ? 10 : (parts.length == 12 ? 9 : 4);
+
+            int instantStartIndex = parts.length == 14 ? 11 : (parts.length == 13 ? 10 : (parts.length == 12 ? 9 : 4));
+
             Instant lastAdded = parseInstant(parts[instantStartIndex]);
             Instant lastModified = parseInstant(parts[instantStartIndex + 1]);
             Instant lastRemoved = parseInstant(parts[instantStartIndex + 2]);
@@ -166,6 +176,7 @@ public class Storage {
                     .condition(condition)
                     .language(language)
                     .cardNumber(cardNumber)
+                    .note(note)
                     .tags(tags)
                     .lastAdded(lastAdded)
                     .lastModified(lastModified)
@@ -222,6 +233,9 @@ public class Storage {
     }
 
     private static boolean isSupportedHeader(String header) {
-        return FILE_HEADER_V2.equals(header) || FILE_HEADER_V3.equals(header) || FILE_HEADER_V4.equals(header);
+        return FILE_HEADER_V2.equals(header)
+                || FILE_HEADER_V3.equals(header)
+                || FILE_HEADER_V4.equals(header)
+                || FILE_HEADER_V5.equals(header);
     }
 }

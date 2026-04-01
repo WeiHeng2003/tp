@@ -6,25 +6,28 @@ import java.util.ArrayList;
 
 public class FindCommand extends Command {
     private final String name;
-    private final Float price;
     private final Integer quantity;
+    private final Float price;
     private final String cardSet;
     private final String rarity;
     private final String condition;
     private final String language;
     private final String cardNumber;
+    private final String note;
     private final String tag;
 
-    public FindCommand(String name, Float price, Integer quantity,
-            String cardSet, String rarity, String condition, String language, String cardNumber, String tag) {
+    public FindCommand(String name, Integer quantity, Float price,
+                       String cardSet, String rarity, String condition,
+                       String language, String cardNumber, String note, String tag) {
         this.name = name;
-        this.price = price;
         this.quantity = quantity;
+        this.price = price;
         this.cardSet = cardSet;
         this.rarity = rarity;
         this.condition = condition;
         this.language = language;
         this.cardNumber = cardNumber;
+        this.note = note;
         this.tag = tag;
     }
 
@@ -33,7 +36,8 @@ public class FindCommand extends Command {
         var ui = context.getUi();
         var inventory = context.getTargetList();
         ArrayList<Card> results = inventory.findCards(
-                name, price, quantity, cardSet, rarity, condition, language, cardNumber, tag);
+                name, quantity, price, cardSet, rarity, condition,
+                language, cardNumber, note, tag);
         ui.printFound(results);
         return new CommandResult(false);
     }

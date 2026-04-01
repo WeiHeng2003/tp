@@ -11,15 +11,18 @@ import java.util.stream.Collectors;
 public class CardsList {
     private final ArrayList<Card> cards;
     private CardsHistory history;
+    private boolean isWishlist;
 
     public CardsList() {
         this.cards = new ArrayList<>();
         this.history = new CardsHistory();
+        this.isWishlist = false;
     }
 
     public CardsList(ArrayList<Card> cards, CardsHistory history) {
         this.cards = new ArrayList<>(cards);
         this.history = history;
+        this.isWishlist = false;
     }
 
     public void addCard(Card newCard) {
@@ -170,14 +173,17 @@ public class CardsList {
         cards.clear();
         cards.addAll(other.getCards());
         history = other.getHistory().copy();
+        isWishlist = other.isWishlist();
     }
 
     public CardsList deepCopy() {
         Map<java.util.UUID, Card> copiedCards = new HashMap<>();
-        return new CardsList(
+        CardsList copy = new CardsList(
                 copyCards(cards, copiedCards),
                 history.copy()
         );
+        copy.setWishlist(isWishlist);
+        return copy;
     }
 
     private static ArrayList<Card> copyCards(ArrayList<Card> source, Map<java.util.UUID, Card> copiedCards) {
@@ -189,53 +195,79 @@ public class CardsList {
         return result;
     }
 
-    public ArrayList<Card> findCards(String name, Float price, Integer quantity,
-            String cardSet, String rarity, String condition, String language, String cardNumber, String tag) {
+    public ArrayList<Card> findCards(String name, Integer quantity, Float price,
+                                     String cardSet, String rarity, String condition,
+                                     String language, String cardNumber, String note, String tag) {
+
         assert cards != null : "Cards inventory should be initialized before searching";
 
         ArrayList<Card> results = new ArrayList<>();
         for (Card card : cards) {
             boolean matches = true;
+
             if (name != null && !card.getName().toLowerCase().contains(name.toLowerCase())) {
                 matches = false;
             }
-            if (price != null && card.getPrice() != price) {
-                matches = false;
-            }
+
             if (quantity != null && card.getQuantity() != quantity) {
                 matches = false;
             }
+
+            if (price != null && card.getPrice() != price) {
+                matches = false;
+            }
+
             if (!containsIgnoreCase(card.getCardSet(), cardSet)) {
                 matches = false;
             }
+
             if (!containsIgnoreCase(card.getRarity(), rarity)) {
                 matches = false;
             }
+
             if (!containsIgnoreCase(card.getCondition(), condition)) {
                 matches = false;
             }
+
             if (!containsIgnoreCase(card.getLanguage(), language)) {
                 matches = false;
             }
+
             if (!containsIgnoreCase(card.getCardNumber(), cardNumber)) {
                 matches = false;
             }
+
+            if (!containsIgnoreCase(card.getNote(), note)) {
+                matches = false;
+            }
+
             if (!containsTagIgnoreCase(card, tag)) {
                 matches = false;
             }
+
             if (matches) {
                 results.add(card);
             }
         }
 
-        assert results != null : "The results list should not be null";
-        assert results.size() <= cards.size();
-
         return results;
     }
 
+    public ArrayList<Card> getDuplicateCards() {
+        ArrayList<Card> duplicates = new ArrayList<>();
+
+        for (Card card : cards) {
+            if (card.getQuantity() > 1) {
+                duplicates.add(card);
+            }
+        }
+
+        return duplicates;
+    }
+
     public boolean editCard(int index, String newName, Integer newQuantity, Float newPrice,
-            String newCardSet, String newRarity, String newCondition, String newLanguage, String newCardNumber) {
+                            String newCardSet, String newRarity, String newCondition,
+                            String newLanguage, String newCardNumber, String newNote) {
         assert index >= 0 && index < cards.size() : "Index should be validated before calling editCard";
 
         Card card = cards.get(index);
@@ -298,6 +330,11 @@ public class CardsList {
             anyFieldChanged = true;
         }
 
+        if (isUpdatedTextValue(newNote, card.getNote())) {
+            card.setNote(trimToNull(newNote));
+            anyFieldChanged = true;
+        }
+
         if (anyFieldChanged) {
             card.setLastModified(currentInstant);
             history.add(originalCard, card.copy());
@@ -343,7 +380,8 @@ public class CardsList {
                 && normalized(first.getRarity()).equals(normalized(second.getRarity()))
                 && normalized(first.getCondition()).equals(normalized(second.getCondition()))
                 && normalized(first.getLanguage()).equals(normalized(second.getLanguage()))
-                && normalized(first.getCardNumber()).equals(normalized(second.getCardNumber()));
+                && normalized(first.getCardNumber()).equals(normalized(second.getCardNumber()))
+                && normalized(first.getNote()).equals(normalized(second.getNote()));
     }
 
     private static boolean containsIgnoreCase(String actualValue, String expectedFragment) {
@@ -411,6 +449,14 @@ public class CardsList {
         cards.sort(comparator);
 
         assert cards.size() > 0 : "List should not be empty if it wasn't before reorder";
+    }
+
+    public boolean isWishlist() {
+        return isWishlist;
+    }
+
+    public void setWishlist(boolean isWishlist) {
+        this.isWishlist = isWishlist;
     }
 
     public CardsHistory getHistory() {

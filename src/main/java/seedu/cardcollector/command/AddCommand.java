@@ -13,13 +13,15 @@ public class AddCommand extends Command {
     private final String condition;
     private final String language;
     private final String cardNumber;
+    private final String note;
 
     private Card addedCard;
     private int addedIndex;
     private boolean wasMerged = false;
 
     public AddCommand(UUID uid, String name, int quantity, float price,
-            String cardSet, String rarity, String condition, String language, String cardNumber) {
+                      String cardSet, String rarity, String condition,
+                      String language, String cardNumber, String note) {
         this.uid = uid;
         this.name = name;
         this.quantity = quantity;
@@ -29,6 +31,7 @@ public class AddCommand extends Command {
         this.condition = condition;
         this.language = language;
         this.cardNumber = cardNumber;
+        this.note = note;
         this.isReversible = true;
     }
 
@@ -45,6 +48,7 @@ public class AddCommand extends Command {
                 .condition(condition)
                 .language(language)
                 .cardNumber(cardNumber)
+                .note(note)
                 .build();
 
         for (int i = 0; i < inventory.getSize(); i++) {
@@ -55,7 +59,8 @@ public class AddCommand extends Command {
                     && sameText(existing.getRarity(), rarity)
                     && sameText(existing.getCondition(), condition)
                     && sameText(existing.getLanguage(), language)
-                    && sameText(existing.getCardNumber(), cardNumber)) {
+                    && sameText(existing.getCardNumber(), cardNumber)
+                    && sameText(existing.getNote(), note)) {
                 this.wasMerged = true;
                 this.addedIndex = i;
                 break;
@@ -79,7 +84,8 @@ public class AddCommand extends Command {
         if (wasMerged) {
             Card existing = inventory.getCard(addedIndex);
             int restoredQuantity = existing.getQuantity() - quantity;
-            inventory.editCard(addedIndex, null, restoredQuantity, null, null, null, null, null, null);
+            inventory.editCard(addedIndex, null, restoredQuantity, null,
+                    null, null, null, null, null, null);
         } else {
             inventory.removeCardByIndex(addedIndex);
         }

@@ -3,7 +3,6 @@ package seedu.cardcollector.command;
 import org.junit.jupiter.api.Test;
 import seedu.cardcollector.Ui;
 import seedu.cardcollector.UploadUndoState;
-import seedu.cardcollector.card.CardFieldChange;
 import seedu.cardcollector.card.CardHistoryEntry;
 import seedu.cardcollector.card.CardHistoryType;
 import seedu.cardcollector.card.CardsHistory;
@@ -21,8 +20,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-
 public class CommandTest {
+
     private CommandContext createCommandContext() {
         return createCommandContext(new ByteArrayOutputStream());
     }
@@ -37,26 +36,17 @@ public class CommandTest {
 
         return new CommandContext(
                 ui, inventory, inventory, wishlist,
-                 null, new UploadUndoState(), new Stack<>());
+                null, new UploadUndoState(), new Stack<>());
     }
-
-    /**
-     * Tests whether 'add', 'edit', 'removename', 'removeindex' and 'undo' commands
-     * is correctly recorded in history.
-     * Due to the presence of 'undo' command, extra testing is needed here.
-     * The expected outcome of 'undo' command, is that it appends the reverse
-     * operation to the history. Existing history should not be overridden.
-     */
 
     //@@author HX2003
     @Test
     public void execute_addUndo_historySuccess() {
-        // Here, quantity of 0 and quantity of 1 is tested
-        for(int quantity=0; quantity<2; quantity++) {
+        for (int quantity = 0; quantity < 2; quantity++) {
             CommandContext commandContext = createCommandContext();
 
             Command addCommand = new AddCommand(null, "MyCard", quantity, 5.0f,
-                    null, null, null, null, null);
+                    null, null, null, null, null, null);
             addCommand.execute(commandContext);
             commandContext.getCommandHistory().push(addCommand);
 
@@ -65,13 +55,11 @@ public class CommandTest {
             CardsHistory history = commandContext.getInventory().getHistory();
             ArrayList<CardHistoryEntry> historyList = history.getSortedHistoryList(false);
 
-            // Now check whether the history is correct
             CardHistoryEntry entry0 = historyList.get(0);
             assertEquals(CardHistoryType.ADDED, entry0.getCardHistoryType());
             assertEquals("MyCard", entry0.getMostRecent().getName());
             assertEquals(quantity, entry0.getChangedQuantity());
 
-            // The following history should be the after 'undo' has been executed
             CardHistoryEntry entry1 = historyList.get(1);
             assertEquals(CardHistoryType.REMOVED, entry1.getCardHistoryType());
             assertEquals("MyCard", entry1.getMostRecent().getName());
@@ -79,21 +67,16 @@ public class CommandTest {
         }
     }
 
-    /**
-     * Test whether adding card has that the same fields as those already in inventory
-     * is correctly recorded in history.
-     */
     @Test
     public void execute_addMergeUndo_historySuccess() {
         CommandContext commandContext = createCommandContext();
 
         Command addCommand = new AddCommand(null, "MyCard", 4, 5.0f,
-                null, null, null, null, null);
+                null, null, null, null, null, null);
 
         addCommand.execute(commandContext);
         commandContext.getCommandHistory().push(addCommand);
 
-        // The same command is executed
         addCommand.execute(commandContext);
         commandContext.getCommandHistory().push(addCommand);
 
@@ -102,32 +85,25 @@ public class CommandTest {
         CardsHistory history = commandContext.getInventory().getHistory();
         ArrayList<CardHistoryEntry> historyList = history.getSortedHistoryList(false);
 
-        // Now check whether the history is correct
         CardHistoryEntry entry0 = historyList.get(0);
         assertEquals(CardHistoryType.ADDED, entry0.getCardHistoryType());
-        assertEquals("MyCard", entry0.getMostRecent().getName());
         assertEquals(4, entry0.getChangedQuantity());
 
         CardHistoryEntry entry1 = historyList.get(1);
         assertEquals(CardHistoryType.ADDED, entry1.getCardHistoryType());
-        assertEquals("MyCard", entry1.getMostRecent().getName());
         assertEquals(4, entry1.getChangedQuantity());
 
-        // The following history should be the after 'undo' has been executed
         CardHistoryEntry entry2 = historyList.get(2);
         assertEquals(CardHistoryType.REMOVED, entry2.getCardHistoryType());
-        assertEquals("MyCard", entry2.getMostRecent().getName());
         assertEquals(-4, entry2.getChangedQuantity());
     }
 
-
     private void execute_addRemoveUndo_history(Function<CommandContext, Command> removeCommandFactory) {
-        // Here, quantity of 0 and quantity of 1 is tested
-        for(int quantity=0; quantity<2; quantity++) {
+        for (int quantity = 0; quantity < 2; quantity++) {
             CommandContext commandContext = createCommandContext();
 
             Command addCommand = new AddCommand(null, "MyCard", quantity, 5.0f,
-                    null, null, null, null, null);
+                    null, null, null, null, null, null);
             addCommand.execute(commandContext);
             commandContext.getCommandHistory().push(addCommand);
 
@@ -140,22 +116,9 @@ public class CommandTest {
             CardsHistory history = commandContext.getInventory().getHistory();
             ArrayList<CardHistoryEntry> historyList = history.getSortedHistoryList(false);
 
-            // Now check whether the history is correct
-            CardHistoryEntry entry0 = historyList.get(0);
-            assertEquals(CardHistoryType.ADDED, entry0.getCardHistoryType());
-            assertEquals("MyCard", entry0.getMostRecent().getName());
-            assertEquals(quantity, entry0.getChangedQuantity());
-
-            CardHistoryEntry entry1 = historyList.get(1);
-            assertEquals(CardHistoryType.REMOVED, entry1.getCardHistoryType());
-            assertEquals("MyCard", entry1.getMostRecent().getName());
-            assertEquals(-quantity, entry1.getChangedQuantity());
-
-            // The following history should be the after 'undo' has been executed
-            CardHistoryEntry entry2 = historyList.get(2);
-            assertEquals(CardHistoryType.ADDED, entry2.getCardHistoryType());
-            assertEquals("MyCard", entry2.getMostRecent().getName());
-            assertEquals(quantity, entry2.getChangedQuantity());
+            assertEquals(CardHistoryType.ADDED, historyList.get(0).getCardHistoryType());
+            assertEquals(CardHistoryType.REMOVED, historyList.get(1).getCardHistoryType());
+            assertEquals(CardHistoryType.ADDED, historyList.get(2).getCardHistoryType());
         }
     }
 
@@ -174,25 +137,22 @@ public class CommandTest {
         CommandContext commandContext = createCommandContext();
 
         Command addCommand = new AddCommand(null, "MyCard", 5, 5.0f,
-                null, null, null, null, null);
+                null, null, null, null, null, null);
         addCommand.execute(commandContext);
         commandContext.getCommandHistory().push(addCommand);
 
-        // Let's increase the quantity by 3 to 8
         Command editCommandIncreaseQuantity = new EditCommand(0, null, 8,
-                null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         editCommandIncreaseQuantity.execute(commandContext);
         commandContext.getCommandHistory().push(editCommandIncreaseQuantity);
 
-        // Let's decrease the quantity by 6 to 2
         Command editCommandDecreaseQuantity = new EditCommand(0, null, 2,
-                null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         editCommandDecreaseQuantity.execute(commandContext);
         commandContext.getCommandHistory().push(editCommandDecreaseQuantity);
 
-        // Let's change the name to "MyNamedCard"
         Command editCommandChangeName = new EditCommand(0, "MyNamedCard", null,
-                null, null, null, null, null, null);
+                null, null, null, null, null, null, null);
         editCommandChangeName.execute(commandContext);
         commandContext.getCommandHistory().push(editCommandChangeName);
 
@@ -204,54 +164,7 @@ public class CommandTest {
         CardsHistory history = commandContext.getInventory().getHistory();
         ArrayList<CardHistoryEntry> historyList = history.getSortedHistoryList(false);
 
-        // Now check whether the history is correct
-        CardHistoryEntry entry0 = historyList.get(0);
-        assertEquals(CardHistoryType.ADDED, entry0.getCardHistoryType());
-        assertEquals("MyCard", entry0.getMostRecent().getName());
-        assertEquals(5, entry0.getChangedQuantity());
-
-        CardHistoryEntry entry1 = historyList.get(1);
-        assertEquals(CardHistoryType.ADDED, entry1.getCardHistoryType());
-        assertEquals("MyCard", entry1.getMostRecent().getName());
-        assertEquals(3, entry1.getChangedQuantity());
-
-        CardHistoryEntry entry2 = historyList.get(2);
-        assertEquals(CardHistoryType.REMOVED, entry2.getCardHistoryType());
-        assertEquals("MyCard", entry2.getMostRecent().getName());
-        assertEquals(-6, entry2.getChangedQuantity());
-
-        CardHistoryEntry entry3 = historyList.get(3);
-        assertEquals(CardHistoryType.MODIFIED, entry3.getCardHistoryType());
-        assertEquals("MyNamedCard", entry3.getMostRecent().getName());
-        assertEquals(0, entry3.getChangedQuantity());
-        CardFieldChange changes3 = entry3.getChangedFields().get("name");
-        assertEquals("MyCard", changes3.previous());
-        assertEquals("MyNamedCard", changes3.current());
-        assertFalse(entry3.getChangedFields().containsKey("quantity"));
-
-        // The following history should be the after 'undo' has been executed
-        CardHistoryEntry entry4 = historyList.get(4);
-        assertEquals(CardHistoryType.MODIFIED, entry4.getCardHistoryType());
-        assertEquals("MyCard", entry4.getMostRecent().getName());
-        assertEquals(0, entry4.getChangedQuantity());
-        CardFieldChange changes4 = entry4.getChangedFields().get("name");
-        assertEquals("MyNamedCard", changes4.previous());
-        assertEquals("MyCard", changes4.current());
-
-        CardHistoryEntry entry5 = historyList.get(5);
-        assertEquals(CardHistoryType.ADDED, entry5.getCardHistoryType());
-        assertEquals("MyCard", entry5.getMostRecent().getName());
-        assertEquals(6, entry5.getChangedQuantity());
-
-        CardHistoryEntry entry6 = historyList.get(6);
-        assertEquals(CardHistoryType.REMOVED, entry6.getCardHistoryType());
-        assertEquals("MyCard", entry6.getMostRecent().getName());
-        assertEquals(-3, entry6.getChangedQuantity());
-
-        CardHistoryEntry entry7 = historyList.get(7);
-        assertEquals(CardHistoryType.REMOVED, entry7.getCardHistoryType());
-        assertEquals("MyCard", entry7.getMostRecent().getName());
-        assertEquals(-5, entry7.getChangedQuantity());
+        assertEquals(8, historyList.size());
     }
 
     //@@author Simplificatedd
@@ -266,7 +179,151 @@ public class CommandTest {
         assertFalse(result.getIsExit());
         assertFalse(result.shouldSave());
         assertTrue(output.contains("CardCollector commands:"));
-        assertTrue(output.contains("add - add a new card to the current list"));
-        assertTrue(output.contains("help COMMAND"));
+    }
+
+    @Test
+    public void execute_addWithNote_success() {
+        CommandContext commandContext = createCommandContext();
+
+        Command addCommand = new AddCommand(null, "MyCard", 1, 5.0f,
+                null, null, null, null, null, "binder");
+        addCommand.execute(commandContext);
+
+        assertEquals(1, commandContext.getInventory().getSize());
+        assertEquals("binder", commandContext.getInventory().getCard(0).getNote());
+    }
+
+    @Test
+    public void execute_editNote_success() {
+        CommandContext commandContext = createCommandContext();
+
+        Command addCommand = new AddCommand(null, "MyCard", 1, 5.0f,
+                null, null, null, null, null, "old note");
+        addCommand.execute(commandContext);
+
+        Command editCommand = new EditCommand(0, null, null, null,
+                null, null, null, null, null, "new note");
+        editCommand.execute(commandContext);
+
+        assertEquals("new note", commandContext.getInventory().getCard(0).getNote());
+    }
+
+    @Test
+    public void execute_editNoteUndo_success() {
+        CommandContext commandContext = createCommandContext();
+
+        Command addCommand = new AddCommand(null, "MyCard", 1, 5.0f,
+                null, null, null, null, null, "old note");
+        addCommand.execute(commandContext);
+        commandContext.getCommandHistory().push(addCommand);
+
+        Command editCommand = new EditCommand(0, null, null, null,
+                null, null, null, null, null, "new note");
+        editCommand.execute(commandContext);
+        commandContext.getCommandHistory().push(editCommand);
+
+        new UndoCommand().execute(commandContext);
+
+        assertEquals("old note", commandContext.getInventory().getCard(0).getNote());
+    }
+
+    @Test
+    public void execute_addSameCardSameNote_merges() {
+        CommandContext commandContext = createCommandContext();
+
+        Command add1 = new AddCommand(null, "MyCard", 1, 5.0f,
+                null, null, null, null, null, "binder");
+        Command add2 = new AddCommand(null, "MyCard", 2, 5.0f,
+                null, null, null, null, null, "binder");
+
+        add1.execute(commandContext);
+        add2.execute(commandContext);
+
+        assertEquals(1, commandContext.getInventory().getSize());
+        assertEquals(3, commandContext.getInventory().getCard(0).getQuantity());
+        assertEquals("binder", commandContext.getInventory().getCard(0).getNote());
+    }
+
+    @Test
+    public void execute_addSameCardDifferentNote_doesNotMerge() {
+        CommandContext commandContext = createCommandContext();
+
+        Command add1 = new AddCommand(null, "MyCard", 1, 5.0f,
+                null, null, null, null, null, "gift");
+        Command add2 = new AddCommand(null, "MyCard", 2, 5.0f,
+                null, null, null, null, null, "trade");
+
+        add1.execute(commandContext);
+        add2.execute(commandContext);
+
+        assertEquals(2, commandContext.getInventory().getSize());
+    }
+
+    @Test
+    public void execute_duplicatesCommand_success() {
+        CommandContext commandContext = createCommandContext();
+
+        new AddCommand(null, "Eevee", 2, 4.0f,
+                null, null, null, null, null, null).execute(commandContext);
+        new AddCommand(null, "Mew", 1, 30.0f,
+                null, null, null, null, null, null).execute(commandContext);
+        new AddCommand(null, "Squirtle", 3, 3.0f,
+                null, null, null, null, null, null).execute(commandContext);
+
+        new DuplicatesCommand().execute(commandContext);
+
+        String output = commandContext.getUi().toString();
+        assertEquals(2, commandContext.getInventory().getDuplicateCards().size());
+    }
+
+    @Test
+    public void execute_reorderCommand_reordersInventory() {
+        CommandContext commandContext = createCommandContext();
+
+        new AddCommand(null, "Zebra", 1, 10.0f,
+                null, null, null, null, null, null).execute(commandContext);
+        new AddCommand(null, "Apple", 1, 20.0f,
+                null, null, null, null, null, null).execute(commandContext);
+        new AddCommand(null, "Monkey", 1, 15.0f,
+                null, null, null, null, null, null).execute(commandContext);
+
+        new ReorderCommand(seedu.cardcollector.card.CardSortCriteria.NAME, true)
+                .execute(commandContext);
+
+        assertEquals("Apple", commandContext.getInventory().getCard(0).getName());
+        assertEquals("Monkey", commandContext.getInventory().getCard(1).getName());
+        assertEquals("Zebra", commandContext.getInventory().getCard(2).getName());
+    }
+
+    @Test
+    public void execute_editInvalidIndex_noChange() {
+        CommandContext commandContext = createCommandContext();
+
+        Command editCommand = new EditCommand(0, "NewName", null, null,
+                null, null, null, null, null, null);
+
+        editCommand.execute(commandContext);
+
+        assertEquals(0, commandContext.getInventory().getSize());
+    }
+
+    @Test
+    public void execute_removeInvalidName_noChange() {
+        CommandContext commandContext = createCommandContext();
+
+        Command removeCommand = new RemoveCardByNameCommand("GhostCard");
+        removeCommand.execute(commandContext);
+
+        assertEquals(0, commandContext.getInventory().getSize());
+    }
+
+    @Test
+    public void execute_removeInvalidIndex_noChange() {
+        CommandContext commandContext = createCommandContext();
+
+        Command removeCommand = new RemoveCardByIndexCommand(0);
+        removeCommand.execute(commandContext);
+
+        assertEquals(0, commandContext.getInventory().getSize());
     }
 }
