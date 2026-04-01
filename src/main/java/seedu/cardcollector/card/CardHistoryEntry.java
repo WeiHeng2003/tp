@@ -100,14 +100,6 @@ public class CardHistoryEntry {
 
         LinkedHashMap<String, CardFieldChange> changedFields = new LinkedHashMap<>();
 
-        String previousName = previous.getName();
-        String currentName = current.getName();
-        if (!currentName.equals(previousName)) {
-            CardFieldChange change = new CardFieldChange(
-                    previousName, currentName);
-            changedFields.put("name", change);
-        }
-
         float previousPrice = previous.getPrice();
         float currentPrice = current.getPrice();
         if (currentPrice != previousPrice) {
@@ -116,12 +108,14 @@ public class CardHistoryEntry {
             changedFields.put("price", change);
         }
 
+        addTextChange(changedFields, "name", previous.getName(), current.getName());
         addTextChange(changedFields, "set", previous.getCardSet(), current.getCardSet());
         addTextChange(changedFields, "rarity", previous.getRarity(), current.getRarity());
         addTextChange(changedFields, "condition", previous.getCondition(), current.getCondition());
         addTextChange(changedFields, "language", previous.getLanguage(), current.getLanguage());
         addTextChange(changedFields, "card number", previous.getCardNumber(), current.getCardNumber());
         addTextChange(changedFields, "tags", formatTags(previous.getTags()), formatTags(current.getTags()));
+        addTextChange(changedFields, "note", previous.getNote(), current.getNote());
 
         return changedFields;
     }
