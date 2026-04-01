@@ -315,7 +315,7 @@ If the `lastCommand` was an:
 
 This feature displays cards in the current list in a sorted order.
 
-#### Architecuture-level
+#### Architecture-level
 
 When the user types `list 50 quantity descending`:
 1. `Ui` reads the raw input.
