@@ -1,6 +1,7 @@
 package seedu.cardcollector.card;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CardsAnalytics {
@@ -71,23 +72,23 @@ public class CardsAnalytics {
     }
 
     public List<CardMetric> getMostExpensiveCards() {
-        return mostExpensiveCards;
+        return Collections.unmodifiableList(mostExpensiveCards);
     }
 
     public List<CardMetric> getTopCardsByHoldingValue() {
-        return topCardsByHoldingValue;
+        return Collections.unmodifiableList(topCardsByHoldingValue);
     }
 
     public List<CardMetric> getCheapestCards() {
-        return cheapestCards;
+        return Collections.unmodifiableList(cheapestCards);
     }
 
     public List<SetMetric> getTopSetsByCount() {
-        return topSetsByCount;
+        return Collections.unmodifiableList(topSetsByCount);
     }
 
     public List<SetValueMetric> getTopSetsByValue() {
-        return topSetsByValue;
+        return Collections.unmodifiableList(topSetsByValue);
     }
 
     public int getZeroPriceCards() {
