@@ -66,7 +66,7 @@ public class Ui {
     private static final String FORMAT_LIST_RECORD =
             "[index = %1$s] %2$s%n";
     private static final String FORMAT_LIST_DISPLAY_NO_RECORD =
-            "Your card list is empty!%n";
+            "Your card list is empty!";
     private static final String FORMAT_LIST_DISPLAY_ALL_RECORDS_ASCENDING =
             "Displaying all %1$d cards sorted by %2$s in ascending order:%n";
     private static final String FORMAT_LIST_DISPLAY_ALL_RECORDS_DESCENDING =
@@ -296,7 +296,7 @@ public class Ui {
     private void printListRecordCount(int originalSize, int limitedSize,
                                       boolean isDescending, String sortCriteriaString) {
         if (originalSize == 0) {
-            out.printf(FORMAT_LIST_DISPLAY_NO_RECORD);
+            out.println(FORMAT_LIST_DISPLAY_NO_RECORD);
             return;
         }
 

@@ -189,49 +189,74 @@ public class CardsList {
         return result;
     }
 
-    public ArrayList<Card> findCards(String name, Float price, Integer quantity,
-            String cardSet, String rarity, String condition, String language, String cardNumber, String tag) {
+    public ArrayList<Card> findCards(String name, Integer quantity, Float price,
+                                     String cardSet, String rarity, String condition,
+                                     String language, String cardNumber, String note, String tag) {
+
         assert cards != null : "Cards inventory should be initialized before searching";
 
         ArrayList<Card> results = new ArrayList<>();
         for (Card card : cards) {
             boolean matches = true;
+
             if (name != null && !card.getName().toLowerCase().contains(name.toLowerCase())) {
                 matches = false;
             }
-            if (price != null && card.getPrice() != price) {
-                matches = false;
-            }
+
             if (quantity != null && card.getQuantity() != quantity) {
                 matches = false;
             }
+
+            if (price != null && card.getPrice() != price) {
+                matches = false;
+            }
+
             if (!containsIgnoreCase(card.getCardSet(), cardSet)) {
                 matches = false;
             }
+
             if (!containsIgnoreCase(card.getRarity(), rarity)) {
                 matches = false;
             }
+
             if (!containsIgnoreCase(card.getCondition(), condition)) {
                 matches = false;
             }
+
             if (!containsIgnoreCase(card.getLanguage(), language)) {
                 matches = false;
             }
+
             if (!containsIgnoreCase(card.getCardNumber(), cardNumber)) {
                 matches = false;
             }
+
+            if (!containsIgnoreCase(card.getNote(), note)) {
+                matches = false;
+            }
+
             if (!containsTagIgnoreCase(card, tag)) {
                 matches = false;
             }
+
             if (matches) {
                 results.add(card);
             }
         }
 
-        assert results != null : "The results list should not be null";
-        assert results.size() <= cards.size();
-
         return results;
+    }
+
+    public ArrayList<Card> getDuplicateCards() {
+        ArrayList<Card> duplicates = new ArrayList<>();
+
+        for (Card card : cards) {
+            if (card.getQuantity() > 1) {
+                duplicates.add(card);
+            }
+        }
+
+        return duplicates;
     }
 
     public boolean editCard(int index, String newName, Integer newQuantity, Float newPrice,

@@ -24,7 +24,7 @@ public class FilterCommand extends Command {
         }
 
         ArrayList<Card> results = context.getTargetList().findCards(
-                null, null, null, null, null, null, null, null, tag);
+                null, null, null, null, null, null, null, null, null, tag);
         context.getUi().printTaggedList(results, tag);
         return new CommandResult(false);
     }

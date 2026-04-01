@@ -12,6 +12,7 @@ import seedu.cardcollector.command.EditCommand;
 import seedu.cardcollector.command.ExitCommand;
 import seedu.cardcollector.command.FilterCommand;
 import seedu.cardcollector.command.FindCommand;
+import seedu.cardcollector.command.DuplicatesCommand;
 import seedu.cardcollector.command.HistoryCommand;
 import seedu.cardcollector.command.HelpCommand;
 import seedu.cardcollector.command.ListCommand;
@@ -60,6 +61,7 @@ public class Parser {
     private static final String KEYWORD_REMOVE_INDEX_COMMAND = "removeindex";
     private static final String KEYWORD_REMOVE_NAME_COMMAND = "removename";
     private static final String KEYWORD_FIND_COMMAND = "find";
+    private static final String KEYWORD_DUPLICATES_COMMAND = "duplicates";
     private static final String KEYWORD_FILTER_COMMAND = "filter";
     private static final String KEYWORD_LIST_COMMAND = "list";
     private static final String KEYWORD_HISTORY_COMMAND = "history";
@@ -96,13 +98,14 @@ public class Parser {
     };
 
     private static final String[] USAGE_FIND_COMMAND = {
-        "find [/n NAME] [/p PRICE] [/q QUANTITY] [/s SET] [/r RARITY] [/c CONDITION] [/l LANGUAGE] "
-                + "[/no CARD_NUMBER] [/t TAG]",
-        "find /n Pikachu",
-        "find /p 12.5",
-        "find /n Pikachu /q 3",
-        "find /s Base Set /r Rare",
-        "find /t trade"
+            "find [/n NAME] [/p PRICE] [/q QUANTITY] [/s SET] [/r RARITY] [/c CONDITION] [/l LANGUAGE] "
+                    + "[/no CARD_NUMBER] [/nt NOTE] [/t TAG]",
+            "find /n Pikachu",
+            "find /p 12.5",
+            "find /n Pikachu /q 3",
+            "find /s Base Set /r Rare",
+            "find /nt trade",
+            "find /t trade"
     };
 
     private static final String[] USAGE_ADD_COMMAND = {
@@ -179,6 +182,11 @@ public class Parser {
                 return HelpCommand.forKeyword(commandKeyword);
             }
             return handleList(arguments);
+        case KEYWORD_DUPLICATES_COMMAND:
+            if (isInlineHelpRequest(arguments)) {
+                return HelpCommand.forKeyword(commandKeyword);
+            }
+            return new DuplicatesCommand();
         case KEYWORD_HISTORY_COMMAND:
             if (isInlineHelpRequest(arguments)) {
                 return HelpCommand.forKeyword(commandKeyword);
@@ -371,6 +379,7 @@ public class Parser {
         String condition = null;
         String language = null;
         String cardNumber = null;
+        String note = null;
         String tag = null;
 
         try {
@@ -388,6 +397,7 @@ public class Parser {
             condition = optionalTextFlag(arguments, FLAG_CONDITION, CARD_FIELD_FLAGS);
             language = optionalTextFlag(arguments, FLAG_LANGUAGE, CARD_FIELD_FLAGS);
             cardNumber = optionalTextFlag(arguments, FLAG_CARD_NUMBER, CARD_FIELD_FLAGS);
+            note = optionalTextFlag(arguments, FLAG_NOTE, CARD_FIELD_FLAGS);
             tag = optionalTextFlag(arguments, FLAG_TAG, CARD_FIELD_FLAGS);
         } catch (NumberFormatException e) {
             throw new ParseInvalidArgumentException(
@@ -401,16 +411,18 @@ public class Parser {
             );
         }
 
-        if (name == null && price == null && quantity == null
+        if (name == null && quantity == null && price == null
                 && cardSet == null && rarity == null && condition == null
-                && language == null && cardNumber == null && tag == null) {
+                && language == null && cardNumber == null
+                && note == null && tag == null) {
             throw new ParseInvalidArgumentException(
                     "At least one search field must be provided",
                     USAGE_FIND_COMMAND
             );
         }
 
-        return new FindCommand(name, price, quantity, cardSet, rarity, condition, language, cardNumber, tag);
+        return new FindCommand(name, quantity, price,
+                cardSet, rarity, condition, language, cardNumber, note, tag);
     }
 
     //@@author HX2003
