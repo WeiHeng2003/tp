@@ -5,11 +5,11 @@ import seedu.cardcollector.card.CardHistoryType;
 import java.util.logging.Logger;
 
 public class HistoryCommand extends Command {
+    private static final Logger LOGGER = Logger.getLogger(HistoryCommand.class.getName());
+
     private final CardHistoryType historyType;
     private final int maxDisplayCount;
     private final boolean isDescending;
-
-    private static final Logger LOGGER = Logger.getLogger(HistoryCommand.class.getName());
 
     public HistoryCommand(CardHistoryType historyType, int maxDisplayCount, boolean isDescending) {
         this.historyType = historyType;

@@ -6,11 +6,11 @@ import java.util.logging.Logger;
 
 
 public class ListCommand extends Command {
+    private static final Logger LOGGER = Logger.getLogger(ListCommand.class.getName());
+
     private final CardSortCriteria sortCriteria;
     private final int maxDisplayCount;
     private final boolean isDescending;
-
-    private static final Logger LOGGER = Logger.getLogger(ListCommand.class.getName());
 
     public ListCommand(CardSortCriteria sortCriteria, int maxDisplayCount, boolean isDescending) {
         this.sortCriteria = sortCriteria;
