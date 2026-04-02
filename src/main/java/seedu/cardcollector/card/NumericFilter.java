@@ -51,11 +51,11 @@ public class NumericFilter {
 
     public boolean matches(double cardValue) {
         return switch (operator) {
-            case EXACT -> cardValue == value;
-            case GT -> cardValue > value;
-            case GTE -> cardValue >= value;
-            case LT -> cardValue < value;
-            case LTE -> cardValue <= value;
+        case EXACT -> cardValue == value;
+        case GT -> cardValue > value;
+        case GTE -> cardValue >= value;
+        case LT -> cardValue < value;
+        case LTE -> cardValue <= value;
         };
     }
 }

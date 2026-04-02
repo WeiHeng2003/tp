@@ -119,19 +119,19 @@ public class Parser {
     };
 
     private static final String[] USAGE_FIND_COMMAND = {
-            "find [/n NAME] [/p PRICE] [/q QUANTITY] [/s SET] [/r RARITY] "
-                    + "[/c CONDITION] [/l LANGUAGE] [/no CARD_NUMBER] [/nt NOTE] [/t TAG]",
-            "find /n pika",
-            "find /p 5.99",
-            "find /q >30",
-            "find /p <3.0",
-            "find /q >=5 /p <=10.5",
-            "find /n charizard /q 2"
+        "find [/n NAME] [/p PRICE] [/q QUANTITY] [/s SET] [/r RARITY] "
+                + "[/c CONDITION] [/l LANGUAGE] [/no CARD_NUMBER] [/nt NOTE] [/t TAG]",
+        "find /n pika",
+        "find /p 5.99",
+        "find /q >30",
+        "find /p <3.0",
+        "find /q >=5 /p <=10.5",
+        "find /n charizard /q 2"
     };
 
     private static final String[] USAGE_CLEAR_COMMAND = {
-            "clear",
-            "wishlist clear"
+        "clear",
+        "wishlist clear"
     };
 
     private static final String[] USAGE_ADD_COMMAND = {
