@@ -496,7 +496,7 @@ The `tag` command adds or removes labels from a card.
 
 ### History Feature
 The cards history is a log of when cards were added, modified, or removed.
-It should not be confused with command history, as its primary purpose is serve as a audit log of the cards in the inventory,
+It should not be confused with command history, as its primary purpose is serve as an audit log of the cards in the inventory,
 therefore `undo` command does not revert the history, but rather adds to the history.
 The exception to this is the `clear` command which clears the history
 
