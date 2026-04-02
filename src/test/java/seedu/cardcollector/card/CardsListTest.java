@@ -1,5 +1,4 @@
 package seedu.cardcollector.card;
-import seedu.cardcollector.card.NumericFilter;
 
 import org.junit.jupiter.api.Test;
 
