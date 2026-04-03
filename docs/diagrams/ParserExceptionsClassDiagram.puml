@@ -1,7 +1,6 @@
 @startuml
 !include Style.puml
 
-skinparam linetype ortho
 skinparam nodesep 100
 
 class Exception {

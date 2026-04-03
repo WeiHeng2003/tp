@@ -40,8 +40,12 @@
         - [Implementation](#implementation-5)
         - [Design decisions](#design-decisions-4)
     - [History Feature](#history-feature)
-    - [Wishlist Feature](#wishlist-feature)
+        - [Design decisions](#design-decisions-5)
         - [Architecture-level](#architecture-level-8)
+        - [Class Diagram](#class-diagram-1)
+        - [Sequence Diagram](#sequence-diagram-1)
+    - [Wishlist Feature](#wishlist-feature)
+        - [Architecture-level](#architecture-level-9)
         - [Implementation](#implementation-key-code-snippets-3)
         - [Class Diagram](#class-diagram-2)
         - [Sequence Diagram](#sequence-diagram-wishlist-add-example)
@@ -513,19 +517,19 @@ The exception to this is the `clear` command which clears the history
   The `ENTIRE` value is a special enum constant used **only for filtering operations**. It is never assigned to individual history entries;
   instead, it is only used to instruct the system to display entries from all 3 categories when listing history.
 
-#### Architecture flow
-Whenever an `add`, `edit`, `remove*`, `tag` or any other command that changes the inventory is executed
-1. A new `CardHistoryEntry` is created. It stores the previous version of the card before any changes (if any), and
-   the current version of the card after the changes (if any).
-2. This new entry is added to `CardsHistory`.
-
-<img src="images/HistoryClassDiagram.svg" width="550" />
-
 #### Alternatives considered
 - A more compact way to store the history, is to track what changed instead of storing two copies of the card.
   While this alternative solution is space-saving, it increases the complexity of decoding and encoding of the history state,
   which was why it was not adopted.
 
+#### Architecture Level
+Whenever an `add`, `edit`, `remove*`, `tag` or any other command that changes the inventory is executed
+1. A new `CardHistoryEntry` is created. It stores the previous version of the card before any changes (if any), and
+   the current version of the card after the changes (if any).
+2. This new entry is added to `CardsHistory`.
+
+#### Class Diagram
+<img src="images/HistoryClassDiagram.svg" width="550" />
 
 #### History Command
 The `history` command simply displays the historical log that were generated when other commands were executed.
@@ -535,6 +539,8 @@ The parsing of this command uses the [Disambiguator](#parser-disambiguator) to s
 To model the interactions that occur when the user issues the command `history all added`, below is a *Sequence Diagram* to illustrate it.
 Some details related to `UI` input handling, and `CardsHistory` have been omitted for brevity.
 
+
+#### Sequence Diagram
 <img src="images/HistorySequenceDiagram.svg" width="600" />
 
 **Note:** The lifeline for `HistoryCommand` actually ends at the destroy marker (X), but due to a limitation in PlantUML, the dotted lifeline continues downwards.
@@ -610,7 +616,7 @@ To handle this reliably, 3 fine-grained exceptions  `ParseBlankCommandException`
 This ensures traceability, providing users with clear context about the issue, and suggests the proper usage whenever possible.
 
 #### Class Diagram
-<img src="images/ParserExceptionsClassDiagram.svg" width="600"/>
+<img src="images/ParserExceptionsClassDiagram.svg" width="800"/>
 
 ### Parser: Disambiguator
 The `Disambiguator` takes an input string and matches it against a list of keywords strings
