@@ -7,7 +7,6 @@
         - [Architecture-level](#architecture-level)
         - [Implementation](#implementation)
         - [Class Diagram](#class-diagram)
-        - [Sequence Diagram](#sequence-diagram-add-n-pikachu-q-2-p-2550)
     - [Edit Feature](#edit-feature)
         - [Architecture-level](#architecture-level-1)
         - [Implementation](#implementation-key-code-snippets-1)
@@ -73,9 +72,10 @@ The architecture of CardCollector consists of three main components:
 1. `CardCollector` reads the raw inputs using `Ui.readInput()` and passes it to `Parser.parse()`.
 2. `Parser.handleAdd()` checks for the 3 required flags (`/n`,`/q`,`/p`), then extracts the flag value and constructs an `AddCommand`
 3. `CardCollector` then creates a `CommandContext` and calls `command.execute(context)`.
-4. `AddCommand.execute()` calls `targetList.addCard(newCard)`.
-5. `CardList.addCard` scans for an existing card with identical name, price, etc... If found, it increments that card's quantity and sets the timestamp `lastAdded`.  
-Otherwise, it adds the new card at the end of the list. After which, regardless of the case records a CardHistory entry
+4. `AddCommand.execute()` scans the target list for an existing card with identical name, price, and metadata fields.   
+    - If found, it calls `targetList.editCard()` to increment the quantity, and records the index for `undo()`.
+    - If not found, it calls `targetList.addCard(newCard)` to append the card and records the new index for `undo()`.
+5. `CardList.addCard` adds the new card and sets the timestamp of `lastAdded`。
 
 #### Implementation
 1. The core logic is in `CardsList.java`:  
@@ -275,7 +275,7 @@ If the `lastCommand` was an:
     if (wasMerged) {
         Card existing = inventory.getCard(addedIndex);
         int restoredQuantity = existing.getQuantity() - quantity;
-        inventory.editCard(addedIndex, null, restoredQuantity, null, null, null, null, null, null);
+        inventory.editCard(addedIndex, null, restoredQuantity, null, null, null, null, null, null, null);
     } else {
         inventory.removeCardByIndex(addedIndex);
     }

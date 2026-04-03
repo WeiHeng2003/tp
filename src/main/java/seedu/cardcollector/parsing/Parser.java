@@ -312,7 +312,9 @@ public class Parser {
     private Command handleAdd(String args) throws ParseInvalidArgumentException {
         assert args != null : "Arguements passed should not be null";
 
-        if (!args.contains("/n") || !args.contains("/q") || !args.contains("/p")) {
+        if (indexOfFlag(args, FLAG_NAME) < 0
+                || indexOfFlag(args, FLAG_QUANTITY) < 0
+                || indexOfFlag(args, FLAG_PRICE) < 0 ) {
             throw new ParseInvalidArgumentException(
                     "Missing required flags (/n /q /p)",
                     USAGE_ADD_COMMAND
@@ -589,7 +591,7 @@ public class Parser {
 
             maxDisplayCount = i;
         } catch (NumberFormatException e) {
-            if ("all".startsWith(maxDisplayCountString)) {
+            if ("all".startsWith(maxDisplayCountString.toLowerCase())) {
                 maxDisplayCount = Integer.MAX_VALUE;
             } else {
                 throw new ParseInvalidArgumentException("Display count invalid", usage);

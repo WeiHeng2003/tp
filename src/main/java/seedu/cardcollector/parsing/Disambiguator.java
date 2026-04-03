@@ -31,12 +31,13 @@ public class Disambiguator {
         }
 
         // Find all keywords that start with the input argument prefix
+        String inputLower = inputTrimmed.toLowerCase();
         ArrayList<String> matches = keywords.stream()
-                .filter(command -> command.startsWith(input))
+                .filter(command -> command.startsWith(inputLower))
                 .collect(Collectors.toCollection(ArrayList::new));
 
         if (matches.isEmpty()) {
-            throw new IllegalArgumentException("unrecognized argument \"" + input + "\"");
+            throw new IllegalArgumentException("unrecognized argument \"" + inputLower + "\"");
         }
 
         if (matches.size() == 1) {

@@ -13,8 +13,7 @@ public class SplitTokenizer {
     }
 
     public void tokenize(String input) {
-        String lowerCase = input.trim().toLowerCase();
-        tokens = new ArrayList<>(Arrays.asList(lowerCase.split(regex)));
+        tokens = new ArrayList<>(Arrays.asList(input.split(regex)));
     }
 
     public String getString(int index) {
