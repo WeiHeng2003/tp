@@ -77,6 +77,8 @@ public class Ui {
             "Displaying %1$d out of %2$d cards sorted by %3$s in descending order:%n";
 
     private static final int DISPLAY_DEFAULT_LIMIT = 15;
+    private static final String DISPLAY_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
 
     private final PrintStream out;
     private final Scanner scanner;
@@ -86,7 +88,7 @@ public class Ui {
         this.out = out;
         this.scanner = new Scanner(in);
         this.dateTimeFormatter = DateTimeFormatter
-                .ofPattern("yyyy-MM-dd HH:mm:ss")
+                .ofPattern(DISPLAY_DATE_TIME_FORMAT)
                 .withZone(ZoneId.systemDefault());
     }
 
