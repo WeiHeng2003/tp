@@ -118,6 +118,7 @@ public class Ui {
         printBorder();
     }
 
+    //@@author HX2003
     public void printInvalidArgumentWarning(String message, String[] usage) {
         printBorder();
         out.printf(FORMAT_INVALID_ARGUMENT, message);
@@ -143,6 +144,7 @@ public class Ui {
         printBorder();
     }
 
+    //@@author Simplificatedd
     public void printHelpOverview(List<HelpTopic> topics, String query) {
         printBorder();
         if (query == null || query.isBlank()) {
@@ -180,6 +182,7 @@ public class Ui {
         printBorder();
     }
 
+    //@@author WeiHeng2003
     public void printExit() {
         printBorder();
         out.println("Bye! See you again");
@@ -201,6 +204,7 @@ public class Ui {
         printList(inventory);
     }
 
+    //@@author bryankuah
     public void printEdited(CardsList inventory, int index) {
         out.println("I have edited card " + (index + 1) + "!");
         printList(inventory);
@@ -228,6 +232,7 @@ public class Ui {
         printList(list);
     }
 
+    //@@author Calvin-GH
     public void printRemoveByNameSuccess(String targetName, CardsList inventory) {
         printBorder();
         out.println("Card \"" + targetName + "\" removed successfully");
@@ -247,6 +252,7 @@ public class Ui {
         printBorder();
     }
 
+    //@@author
     public void printList(CardsList list) {
         assert list != null : "List should not be null when printing";
         printBorder();
@@ -274,6 +280,7 @@ public class Ui {
         printBorder();
     }
 
+    //@@author HX2003
     public void printList(CardsList list, CardSortCriteria sortCriteria,
                           int maxDisplayCount, boolean isDescending) {
         printBorder();
@@ -333,6 +340,7 @@ public class Ui {
         }
     }
 
+    //@@author
     public void printAnalytics(String listName, CardsAnalytics analytics) {
         printBorder();
         out.println("Analytics for your " + listName + ":");
@@ -401,6 +409,7 @@ public class Ui {
         printBorder();
     }
 
+    //@@author bryankuah
     public void printFound(ArrayList<Card> results) {
         assert results != null : "Results list passed to Ui should not be null";
 
@@ -416,6 +425,7 @@ public class Ui {
         printBorder();
     }
 
+    //@@author Simplificatedd
     public void printTaggedList(ArrayList<Card> results, String tag) {
         assert results != null : "Results list passed to Ui should not be null";
 
@@ -447,6 +457,7 @@ public class Ui {
         }
     }
 
+    //@@author Calvin-GH
     private void printTopCardsByHoldingValue(List<CardsAnalytics.CardMetric> cardsByHoldingValue) {
         out.println("Top cards by total holding value:");
         if (cardsByHoldingValue.isEmpty()) {
@@ -509,6 +520,7 @@ public class Ui {
                 + "/" + analytics.getDistinctCards());
     }
 
+    //@@author Simplificatedd
     private void printTopSets(List<CardsAnalytics.SetMetric> topSets) {
         out.println("Top sets by count:");
         if (topSets.isEmpty()) {
@@ -606,6 +618,7 @@ public class Ui {
         printBorder();
     }
 
+    //@@author HX2003
     /**
      * Prints a formatted message indicating the number of historical records being displayed.
      * The message varies based on whether all records are shown or only a limited
@@ -707,7 +720,6 @@ public class Ui {
         LinkedHashMap<String, CardFieldChange> changedFields = entry.getChangedFields();
         Instant lastModified = current.getLastModified();
         assert lastModified != null;
-
         String date = dateTimeFormatter.format(lastModified);
 
         String fieldsString = changedFields.entrySet().stream()
@@ -734,6 +746,7 @@ public class Ui {
         out.printf(FORMAT_HISTORY_REMOVED_RECORD, date, removedQuantity, mostRecent);
     }
 
+    //@@author bryankuah
     public void printCleared(CardsList list) {
         String listType = list.isWishlist() ? "wishlist" : "inventory";
         out.println("Your " + listType + " has been cleared!");
