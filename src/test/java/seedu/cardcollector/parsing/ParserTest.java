@@ -173,6 +173,11 @@ public class ParserTest {
                 ParseInvalidArgumentException.class,
                 () -> parser.parse("history all added zz")
         );
+
+        assertThrows(
+                ParseInvalidArgumentException.class,
+                () -> parser.parse("history all added ascending toomanyargument")
+        );
     }
 
     @Test
