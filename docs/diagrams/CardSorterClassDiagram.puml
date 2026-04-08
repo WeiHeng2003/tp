@@ -25,6 +25,7 @@ enum CardSortCriteria <<enumeration>> {
     CONDITION
     LANGUAGE
     NUMBER
+    NOTE
     ADDED
     MODIFIED
     REMOVED

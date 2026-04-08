@@ -80,9 +80,9 @@ Permanently reorders the stored cards in your inventory or wishlist by the chose
 
 ### Listing cards: `list`
 
-Displays all cards in the current list in a sorted order.
+Displays cards in the current list in a sorted order.
 
-**Format:** `list [NUMBER | all] [index | name | quantity | price | set | rarity | condition | language | number | added | modified | removed] [ascending | descending]`
+**Format:** `list [NUMBER | all] [index | name | quantity | price | set | rarity | condition | language | number | note | added | modified | removed] [ascending | descending]`
 
 **Examples:**
 `list`
@@ -92,9 +92,9 @@ Displays all cards in the current list in a sorted order.
 - By default, the displayed list is sorted by index in ascending order.
 - Arguments are optional, but if specified, they must be in order.
 - Argument matching is intentionally fuzzy for fast usage.
-- Except for index, quantity and price, all other properties are treated as strings and thus are sorted in lexicographical order.
+- Except for index, quantity and price, all other properties are treated as strings and thus are sorted in case-insensitive lexicographical order.
   - This includes `rarity` and `condition`, as they do not have any predefined order.
-  - This includes card `number` (not to be confused with `index` or `quantity`). 
+  - This includes card `number` (not to be confused with `index` or `quantity`). Despite its name, `number` is a string identifier (e.g. "LOT-01"), not a numeric type.
 
 
 ### Filtering cards: `filter`
@@ -239,7 +239,7 @@ Moves a card from the wishlist to your main inventory (and removes it from the w
 **Example:**
 `wishlist acquired 3`
 
-### Clearing
+### Clearing cards and history: `clear`
 
 Clears **all** cards and their histories from the current list (inventory or wishlist).  
 The action is **reversible** with `undo`.
@@ -247,16 +247,13 @@ The action is **reversible** with `undo`.
 **Format:**  
 `clear`
 
-**Alternative (explicit):**  
-`wishlist clear`
-
 **Examples:**
 - `clear`
 - `wishlist clear`
 
 **Note:**
 - This permanently deletes everything in the list **until** you type `undo`.
-- The other list (inventory ↔ wishlist) is unaffected.
+- The other list (either the inventory, or the wishlist) is unaffected.
 
 ### Downloading a storage snapshot: `download`
 

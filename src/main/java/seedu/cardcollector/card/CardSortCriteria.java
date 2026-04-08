@@ -10,6 +10,7 @@ public enum CardSortCriteria {
     CONDITION("condition"),
     LANGUAGE("language"),
     NUMBER("number"),
+    NOTE("note"),
     ADDED("added"),
     MODIFIED("modified"),
     REMOVED("removed");

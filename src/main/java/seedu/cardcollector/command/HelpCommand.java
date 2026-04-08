@@ -40,7 +40,7 @@ public class HelpCommand extends Command {
             }),
             new HelpTopic("list", List.of(), "list cards in a sorted order", new String[] {
                 "list [NUMBER | all] [index | name | quantity | price " +
-                        "| set | rarity | condition | language | number | added | modified | removed] " +
+                        "| set | rarity | condition | language | number | note | added | modified | removed] " +
                         "[ascending | descending]",
                 "list",
                 "list 50 quantity ascending"

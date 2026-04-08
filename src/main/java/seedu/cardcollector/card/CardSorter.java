@@ -8,13 +8,19 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CardSorter {
+    /**
+     * Returns a comparator for sorting cards according to the specified criteria.
+     *
+     * @param criteria The sorting criteria to use (e.g. INDEX, NAME, QUANTITY, etc.).
+     * @return A comparator that sorts cards by the given criteria.
+     */
     public static Comparator<Card> getSortComparator(CardSortCriteria criteria) {
         switch (criteria) {
         case INDEX -> {
             assert false : "index criteria should not use a comparator";
         }
         case NAME -> {
-            return Comparator.comparing(Card::getName);
+            return Comparator.comparing(Card::getName, String.CASE_INSENSITIVE_ORDER);
         }
         case QUANTITY -> {
             return Comparator.comparingInt(Card::getQuantity);
@@ -24,23 +30,27 @@ public class CardSorter {
         }
         case SET -> {
             return Comparator.comparing(Card::getCardSet,
-                    Comparator.nullsFirst(Comparator.naturalOrder()));
+                    Comparator.nullsFirst(String.CASE_INSENSITIVE_ORDER));
         }
         case RARITY -> {
             return Comparator.comparing(Card::getRarity,
-                    Comparator.nullsFirst(Comparator.naturalOrder()));
+                    Comparator.nullsFirst(String.CASE_INSENSITIVE_ORDER));
         }
         case CONDITION -> {
             return Comparator.comparing(Card::getCondition,
-                    Comparator.nullsFirst(Comparator.naturalOrder()));
+                    Comparator.nullsFirst(String.CASE_INSENSITIVE_ORDER));
         }
         case LANGUAGE -> {
             return Comparator.comparing(Card::getLanguage,
-                    Comparator.nullsFirst(Comparator.naturalOrder()));
+                    Comparator.nullsFirst(String.CASE_INSENSITIVE_ORDER));
         }
         case NUMBER -> {
             return Comparator.comparing(Card::getCardNumber,
-                    Comparator.nullsFirst(Comparator.naturalOrder()));
+                    Comparator.nullsFirst(String.CASE_INSENSITIVE_ORDER));
+        }
+        case NOTE -> {
+            return Comparator.comparing(Card::getNote,
+                    Comparator.nullsFirst(String.CASE_INSENSITIVE_ORDER));
         }
         case ADDED -> {
             return Comparator.comparing(Card::getLastAdded,
@@ -61,6 +71,17 @@ public class CardSorter {
         return null;
     }
 
+    /**
+     * Returns a new sorted ArrayList of cards by the specified criteria,
+     * results can be limited to a maximum size and ordered ascending or descending.
+     *
+     * @param cards The ArrayList of cards.
+     * @param criteria The criteria to sort by (e.g. INDEX, NAME, QUANTITY, etc.).
+     * @param maxLimit The maximum number of cards to return. Uses defaultMaxLimit if negative.
+     * @param defaultMaxLimit The limit applied when maxLimit is negative.
+     * @param isDescending True for descending order, false for ascending.
+     * @return A new sorted list of cards.
+     */
     public static ArrayList<Card> sort(
             ArrayList<Card> cards,
             CardSortCriteria criteria,
@@ -94,7 +115,7 @@ public class CardSorter {
             cardsStream = cardsStream.sorted(comparator);
         }
 
-        int recordsLimit = (maxLimit == -1) ? defaultMaxLimit :
+        int recordsLimit = (maxLimit < 0) ? defaultMaxLimit :
                 Math.min(cards.size(), maxLimit);
 
         return cardsStream
