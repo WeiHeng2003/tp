@@ -618,6 +618,164 @@ public void printList(CardsList list) {
 - Wrapper commands (e.g. `WishlistAddCommand`) — rejected (massive duplication).
 - Single `CardCollectionManager` with a map — rejected (overkill for exactly two lists).
 
+### Compare Feature
+
+The `compare` command lets users compare any two cards side-by-side by their indices in the current list (works for both inventory and wishlist).
+
+#### Architecture-level
+1. `Ui` reads the raw input.
+2. `CardCollector` passes the input to `Parser.parse()`.
+3. `Parser.handleCompare()` extracts two indices and creates a `CompareCommand(index1, index2)`.
+4. `CardCollector` creates a `CommandContext` (with the correct target list) and calls `command.execute(context)`.
+5. `CompareCommand.execute()` validates the indices and delegates the display to `Ui.printCompared(...)`.
+
+#### Implementation
+**Parsing logic** in `Parser.java` (inside `handleCompare`):
+```java
+String[] parts = args.trim().split(REGEX_WHITESPACES);
+if (parts.length != 2) {
+    throw new ParseInvalidArgumentException(...);
+}
+int index1 = Integer.parseInt(parts[0].trim()) - 1;
+int index2 = Integer.parseInt(parts[1].trim()) - 1;
+return new CompareCommand(index1, index2);
+```
+
+**Core logic** in `CompareCommand.java`:
+```java
+@Override
+public CommandResult execute(CommandContext context) {
+    var ui = context.getUi();
+    var cardsList = context.getTargetList();
+    if (index1 < 0 || index1 >= cardsList.getSize() 
+        || index2 < 0 || index2 >= cardsList.getSize() 
+        || index1 == index2) {
+        ui.printInvalidIndex();
+        return new CommandResult(false);
+    }
+    ui.printCompared(cardsList, index1, index2);
+    return new CommandResult(false);
+}
+```
+
+**Design decisions**
+- Read-only operation (no undo needed).
+- Index validation prevents out-of-bounds or self-comparison errors.
+- Fully supports the `wishlist ` prefix via the existing `CommandContext` routing.
+
+### Reorder Feature
+
+The `reorder` command permanently changes the order of cards in the current list (inventory or wishlist) according to a chosen criterion and direction.
+
+#### Architecture-level
+1. User enters `reorder CRITERIA [asc|desc]` (or `wishlist reorder ...`).
+2. `Parser.handleReorder()` parses the criterion and optional direction.
+3. A `ReorderCommand(criteria, isAscending)` is created.
+4. `execute()` calls `targetList.reorder(...)` which sorts the internal list in-place.
+5. `Ui.printReordered(...)` shows the new order.
+
+#### Implementation
+**Core logic** in `ReorderCommand.java`:
+```java
+@Override
+public CommandResult execute(CommandContext context) {
+    var ui = context.getUi();
+    var targetList = context.getTargetList();
+    targetList.reorder(criteria, isAscending);
+    ui.printReordered(targetList);
+    return new CommandResult(false);
+}
+```
+
+**Sorting logic** lives in `CardsList.java` (uses the `CardSortCriteria` enum and a helper comparator from `CardSorter`):
+```java
+public void reorder(CardSortCriteria criteria, boolean isAscending) {
+    // ... builds comparator and calls cards.sort(...)
+}
+```
+
+**Design decisions**
+- In-place sorting (efficient and matches the “reorder” intent).
+- Criteria are defined in the `CardSortCriteria` enum for type safety.
+- Works on wishlist via the same prefix mechanism used by other commands.
+
+### Clear Feature
+
+The `clear` command deletes every card in the current list (inventory or wishlist) and is reversible with `undo`.
+
+#### Architecture-level
+1. `Parser.handleClear()` accepts no extra arguments.
+2. A `ClearCommand` (marked reversible) is created.
+3. `execute()` saves a deep copy of the current list, clears the list, and prints confirmation.
+4. `undo()` restores the previous state.
+
+#### Implementation
+**Key code** in `ClearCommand.java`:
+```java
+public ClearCommand() {
+    this.isReversible = true;
+}
+
+@Override
+public CommandResult execute(CommandContext context) {
+    var targetList = context.getTargetList();
+    this.previousState = targetList.deepCopy();   // for undo
+    targetList.clear();
+    context.getUi().printCleared(targetList);
+    return new CommandResult(false);
+}
+
+@Override
+public CommandResult undo(CommandContext context) {
+    var targetList = context.getTargetList();
+    targetList.replaceWith(previousState);
+    context.getUi().printUndoSuccess(targetList);
+    return new CommandResult(false);
+}
+```
+
+**Design decisions**
+- Marked as reversible (`isReversible = true`) to protect against accidental data loss.
+- Uses `deepCopy()` / `replaceWith()` so undo restores the exact previous state (including history).
+- Affects whichever list is active (inventory or wishlist).
+
+### Wishlist Acquired Feature
+
+The `acquired INDEX` command (used inside wishlist context) moves a card from the wishlist to the main inventory once it has been obtained.
+
+#### Architecture-level
+1. User enters `wishlist acquired INDEX`.
+2. `Parser` detects the `acquired` keyword and creates an `AcquiredCommand(targetIndex)`.
+3. `execute()` validates the index on the wishlist, removes the card from wishlist, adds it to inventory, and prints confirmation.
+
+#### Implementation
+**Core logic** in `AcquiredCommand.java`:
+```java
+@Override
+public CommandResult execute(CommandContext context) {
+    Ui ui = context.getUi();
+    CardsList wishlist = context.getWishlist();
+    CardsList inventory = context.getInventory();
+
+    if (targetIndex < 0 || targetIndex >= wishlist.getSize()) {
+        ui.printInvalidIndex();
+        return new CommandResult(false, false);
+    }
+
+    Card card = wishlist.getCard(targetIndex);
+    wishlist.removeCardByIndex(targetIndex);
+    inventory.addCard(card);
+
+    ui.printAcquired(inventory);
+    return new CommandResult(false, true);
+}
+```
+
+**Design decisions**
+- Transfers ownership cleanly: remove from wishlist + `addCard` to inventory (reuses existing add/merge logic).
+- Updates both lists atomically within one command.
+- Can be used only on the wishlist (enforced by prefix routing).
+
 
 ### Parser: Exceptions
 During parsing, users may occasionally enter invalid inputs.
