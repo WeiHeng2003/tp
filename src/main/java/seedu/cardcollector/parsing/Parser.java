@@ -488,7 +488,7 @@ public class Parser {
         String isDescendingString = tokenizer.getString(2);
 
         int maxDisplayCount = getMaxDisplayCount(maxDisplayCountString, USAGE_LIST_COMMAND);
-        CardSortCriteria sortCriteria = getSortCriteria(sortCriteriaString, null, USAGE_LIST_COMMAND);
+        CardSortCriteria sortCriteria = getSortCriteria(sortCriteriaString, USAGE_LIST_COMMAND);
         boolean isDescending = getIsDescending(isDescendingString, false, USAGE_LIST_COMMAND);
 
         return new ListCommand(sortCriteria, maxDisplayCount, isDescending);
@@ -673,12 +673,11 @@ public class Parser {
      * @param sortCriteriaString The string to parse, may be null or blank.
      * @param usage The command usage information array, used for error messaging
      *              when an invalid argument is provided.
-     * @return Returns the sort criteria.
+     * @return Returns the sort criteria, default to INDEX if sortCriteriaString is null.
      * @throws ParseInvalidArgumentException If the input string is not null and not blank,
      *                                       but the disambiguation fails.
      */
-    private static CardSortCriteria getSortCriteria(
-            String sortCriteriaString, CardSortCriteria[] exclusion, String[] usage)
+    private static CardSortCriteria getSortCriteria(String sortCriteriaString, String[] usage)
             throws ParseInvalidArgumentException {
         if (sortCriteriaString == null) {
             return CardSortCriteria.INDEX;
@@ -968,10 +967,7 @@ public class Parser {
         String sortCriteriaString = tokenizer.getString(0);
         String isDescendingString = tokenizer.getString(1);
 
-        CardSortCriteria[] exclusion = new CardSortCriteria[]{
-            CardSortCriteria.INDEX // Exclude index as list is already stored in index order
-        };
-        CardSortCriteria sortCriteria = getSortCriteria(sortCriteriaString, exclusion, USAGE_REORDER_COMMAND);
+        CardSortCriteria sortCriteria = getSortCriteria(sortCriteriaString, USAGE_REORDER_COMMAND);
         boolean isDescending = getIsDescending(isDescendingString, false, USAGE_REORDER_COMMAND);
 
 
