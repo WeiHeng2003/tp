@@ -11,47 +11,68 @@
         - [Architecture-level](#architecture-level-1)
         - [Implementation](#implementation-key-code-snippets-1)
         - [Sequence Diagram](#sequence-diagram-edit-1-n-dragonite-q-3)
+        - [Design decisions](#design-decisions)
     - [Undo Feature](#undo-feature)
         - [Architecture-level](#architecture-level-2)
         - [Implementation](#implementation-key-code-snippets-2)
         - [Sequence Diagram](#sequence-diagram)
     - [List Feature](#list-feature)
+        - [Design decisions](#design-decisions-1)
         - [Architecture-level](#architecture-level-3)
         - [Implementation](#implementation-1)
-        - [Design decisions](#design-decisions)
     - [Duplicates Feature](#duplicates-feature)
         - [Architecture-level](#architecture-level-4)
         - [Implementation](#implementation-2)
-        - [Design decisions](#design-decisions-1)
+        - [Design decisions](#design-decisions-2)
     - [Find Feature](#find-feature)
         - [Architecture-level](#architecture-level-5)
         - [Implementation](#implementation-3)
-        - [Design decisions](#design-decisions-2)
+        - [Design decisions](#design-decisions-3)
     - [Analytics Feature](#analytics-feature)
-        - [Architecture-level](#architecture-level-analytics)
-        - [Implementation](#implementation-analytics)
-        - [Design decisions](#design-decisions-analytics)
-    - [Filter Feature](#filter-feature)
         - [Architecture-level](#architecture-level-6)
         - [Implementation](#implementation-4)
-        - [Design decisions](#design-decisions-3)
-    - [Tag Feature](#tag-feature)
+        - [Design decisions](#design-decisions-4)
+    - [Filter Feature](#filter-feature)
         - [Architecture-level](#architecture-level-7)
         - [Implementation](#implementation-5)
-        - [Design decisions](#design-decisions-4)
-    - [History Feature](#history-feature)
         - [Design decisions](#design-decisions-5)
+    - [Tag Feature](#tag-feature)
         - [Architecture-level](#architecture-level-8)
-        - [Class Diagram](#class-diagram-1)
-        - [Sequence Diagram for Adding History Entry](#sequence-diagram-for-adding-history-entry)
-        - [Sequence Diagram for History Command](#sequence-diagram-for-history-command)
-    - [Wishlist Feature](#wishlist-feature)
+        - [Implementation](#implementation-6)
+        - [Design decisions](#design-decisions-6)
+    - [History Feature](#history-feature)
+        - [Design decisions for tracking history](#design-decisions-for-tracking-history)
         - [Architecture-level](#architecture-level-9)
-        - [Implementation](#implementation-key-code-snippets-3)
+        - [Implementation](#implementation-7)
+        - [Class Diagram](#class-diagram-1)
+        - [Sequence Diagram for adding history entry](#sequence-diagram-for-adding-history-entry)
+        - [Design decisions](#design-decisions-7)
+        - [Sequence Diagram for history command](#sequence-diagram-for-history-command)
+    - [Wishlist Feature](#wishlist-feature)
+        - [Architecture-level](#architecture-level-10)
+        - [Implementation](#implementation-key-code-snippets-2)
         - [Class Diagram](#class-diagram-2)
         - [Sequence Diagram](#sequence-diagram-wishlist-add-example)
+        - [Design decisions](#design-decisions-8)
+    - [Compare Feature](#compare-feature)
+        - [Architecture-level](#architecture-level-11)
+        - [Implementation](#implementation-8)
+        - [Design decisions](#design-decisions-9)
+    - [Reorder Feature](#reorder-feature)
+        - [Architecture-level](#architecture-level-12)
+        - [Implementation](#implementation-9)
+        - [Design decisions](#design-decisions-10)
+    - [Clear Feature](#clear-feature)
+        - [Architecture-level](#architecture-level-13)
+        - [Implementation](#implementation-10)
+        - [Design decisions](#design-decisions-11)
+    - [Wishlist Acquired Feature](#wishlist-acquired-feature)
+        - [Architecture-level](#architecture-level-14)
+        - [Implementation](#implementation-11)
+        - [Design decisions](#design-decisions-12)
     - [Parser: Exceptions](#parser-exceptions)
         - [Class Diagram](#class-diagram-3)
+    - [Parser: SplitTokenizer](#parser-split-tokenizer)
     - [Parser: Disambiguator](#parser-disambiguator)
 - [Appendix: Product Scope](#appendix-product-scope)
     - [Target User Profile](#target-user-profile)
@@ -237,7 +258,7 @@ public void printEdited(CardsList inventory, int index) {
 #### Sequence Diagram (`edit 1 /n Dragonite /q 3`)
 <img src="images/EditSequenceDiagram.svg" width="900" />
 
-**Design decisions**
+#### Design decisions
 - Require **at least one** field to be edited (enforced in Parser).
 - Reuse existing flag-parsing style (`/n`, `/q`, `/p`).
 - `lastModified` is updated automatically so `history modified` works without extra changes.
@@ -323,11 +344,17 @@ If the `lastCommand` was an:
 
 
 ### List Feature
-
-This feature displays cards in the current list in a sorted order.
+This feature displays cards in the current list in a sorted order,
+it does not mutate the cards list in the inventory.
+ 
+#### Design decisions
+- Sorting uses `CardSorter` class which internally creates a `Comparator` to sort a copy of the ArrayList.
+- Users can specify how many cards to display, the sort criteria, and the sort direction.
+- If no arguments are provided, cards are listed by index in ascending order.
+- `Parser` uses [SplitTokenizer](#parser-split-tokenizer) to split up input arguments by whitespace(s) delimiter.
+- Once split, `Parser` uses fuzzy argument matching through the [Disambiguator](#parser-disambiguator) to allow faster typing for experienced CLI users.
 
 #### Architecture-level
-
 When the user types `list 50 quantity descending`:
 1. `Ui` reads the raw input.
 2. `CardCollector` passes the input to `Parser`.
@@ -339,12 +366,6 @@ When the user types `list 50 quantity descending`:
 7. `Ui` shows the sorted list.
 
 #### Implementation
-- Users can specify how many cards to display, the sort field, and the sort direction.
-- If no arguments are provided, cards are listed by index in ascending order.
-
-#### Design decisions
-- Fuzzy argument matching using the [Disambiguator](#parser-disambiguator) allows faster typing for experienced CLI users.
-- Sorting is kept read-only so listing never mutates stored card data.
 
 #### Card sorting classes
 
@@ -507,7 +528,7 @@ It should not be confused with command history, as its primary purpose is serve 
 therefore `undo` command does not revert the history, but rather adds to the history.
 The exception to this is the `clear` command which clears the history
 
-#### Design decisions
+#### Design decisions for tracking history
 - For each history entry, a deep copy of the previous and current card is stored.
 - 3 category types were devised. They are **mutually exclusive**
   to ensure they can be listed in a chronological sequence without duplicated entries representing the same event.
@@ -535,6 +556,7 @@ Note: a conflict arises when `edit` command both changes the quantity and other 
 in such a case the `add` method of `CardsHistory` will be called twice,
 one for change in quantity, and the other for the change in the other fields.
 
+#### Implementation
 #### Class Diagram
 <img src="images/HistoryClassDiagram.svg" width="600" />
 
@@ -544,10 +566,13 @@ one for change in quantity, and the other for the change in the other fields.
 #### History Command
 The `history` command displays the contents of the `CardsHistory` which was previously populated by other commands.
 While this command itself does not mutate any existing data, it uses `CardFieldChange` on the fly to identify and print exactly what changed in each historical entry.
-The parsing of this command uses the [Disambiguator](#parser-disambiguator) to support fuzzy arguments.
 
-To model the interactions that occur when the user issues the command `history all added`, below is a *Sequence Diagram* to illustrate it.
-Some details related to `UI` input handling, and `CardsHistory` have been omitted for brevity.
+#### Design decisions
+- `Parser` uses [SplitTokenizer](#parser-split-tokenizer) to split up input arguments by whitespace(s) delimiter.
+- Once split, `parser` uses fuzzy argument matching through the [Disambiguator](#parser-disambiguator) to allow faster typing for experienced CLI users.
+
+To model the interactions that occur when the user issues the command `history all added`, below is a simplified *Sequence Diagram* to illustrate it.
+Some details related to `UI` input handling, `Parsing` and `CardsHistory` have been omitted for brevity.
 
 
 #### Sequence Diagram for History Command
@@ -609,7 +634,7 @@ public void printList(CardsList list) {
 #### Sequence Diagram (`wishlist add` example)
 <img src="images/WishlistSequenceDiagram.svg" width="900" />
 
-**Design decisions**
+#### Design decisions
 - Two separate `CardsList` objects inside `CardCollector` because behaviour is identical.
 - All routing logic is confined to `CardCollector.run()` so no command classes or Parser needed changes.
 - Each list keeps its own history, so `history` and `history modified` work independently.
@@ -658,7 +683,7 @@ public CommandResult execute(CommandContext context) {
 }
 ```
 
-**Design decisions**
+#### Design decisions
 - Read-only operation (no undo needed).
 - Index validation prevents out-of-bounds or self-comparison errors.
 - Fully supports the `wishlist ` prefix via the existing `CommandContext` routing.
@@ -668,7 +693,7 @@ public CommandResult execute(CommandContext context) {
 The `reorder` command permanently changes the order of cards in the current list (inventory or wishlist) according to a chosen criterion and direction.
 
 #### Architecture-level
-1. User enters `reorder CRITERIA [asc|desc]` (or `wishlist reorder ...`).
+1. User enters `reorder CRITERIA [ascending | descending]` (or `wishlist reorder ...`).
 2. `Parser.handleReorder()` parses the criterion and optional direction.
 3. A `ReorderCommand(criteria, isAscending)` is created.
 4. `execute()` calls `targetList.reorder(...)` which sorts the internal list in-place.
@@ -694,7 +719,8 @@ public void reorder(CardSortCriteria criteria, boolean isAscending) {
 }
 ```
 
-**Design decisions**
+#### Design decisions
+- Fuzzy argument matching using the [Disambiguator](#parser-disambiguator) allows faster typing for experienced CLI users.
 - In-place sorting (efficient and matches the “reorder” intent).
 - Criteria are defined in the `CardSortCriteria` enum for type safety.
 - Works on wishlist via the same prefix mechanism used by other commands.
@@ -734,7 +760,7 @@ public CommandResult undo(CommandContext context) {
 }
 ```
 
-**Design decisions**
+#### Design decisions
 - Marked as reversible (`isReversible = true`) to protect against accidental data loss.
 - Uses `deepCopy()` / `replaceWith()` so undo restores the exact previous state (including history).
 - Affects whichever list is active (inventory or wishlist).
@@ -771,7 +797,7 @@ public CommandResult execute(CommandContext context) {
 }
 ```
 
-**Design decisions**
+#### Design decisions
 - Transfers ownership cleanly: remove from wishlist + `addCard` to inventory (reuses existing add/merge logic).
 - Updates both lists atomically within one command.
 - Can be used only on the wishlist (enforced by prefix routing).
@@ -789,6 +815,10 @@ The first string is usually the usage format, while strings onwards are example 
 
 #### Class Diagram
 <img src="images/ParserExceptionsClassDiagram.svg" width="800"/>
+
+### Parser: Split Tokenizer
+The `SplitTokenizer` processes a string by splitting it around matches of the given regular expression,
+and provides indexed access to the resulting tokens.
 
 ### Parser: Disambiguator
 The `Disambiguator` takes an input string and matches it against a list of keywords strings

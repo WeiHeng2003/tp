@@ -83,9 +83,14 @@ Displays cards in the current list in a sorted order.
 - Arguments are optional, but if specified, must be in order.
 - Argument matching is intentionally fuzzy for fast usage.
 - **Sorting guide**:
-  - Except for index, quantity and price, **all** other properties are treated as strings and thus are sorted in case-insensitive lexicographical order.
+  - Except for `index`, `quantity` and `price`, **all** other properties are treated as strings and thus are sorted in case-insensitive lexicographical order.
     - This includes `rarity` and `condition`, as they do not have any predefined order.
     - This includes card `number` (not to be confused with `index` or `quantity`). Despite its name, `number` is a string identifier (e.g. "LOT-01"), not a numeric type.
+    - Some properties may be uninitialized or have null values, in such scenarios,
+    null values appear first when the sorting direction is `ascending`,
+    while null values appear last when the sorting direction is `descending`.
+  - For properties `added`, `modified` and `removed` refer to [history](#viewing-history-history) for detailed explanation on what they mean.
+
 
 ### Reordering the list: `reorder`
 
@@ -215,9 +220,9 @@ Displays a historical audit log of when cards were added, modified, or removed.
 
 - Arguments are optional, but if specified, they must be in order.
 - Argument matching is intentionally fuzzy for fast usage.
-- An 'added' entry occurs when a new or existing card is added, or when the edit command increases the quantity of the card.
-- A 'modified' entry occurs when a card value is changed, **excluding** any changes to the quantity of the card.
-- A 'removed' entry occurs when a card is removed, or when the edit command decreases the quantity of the card.
+- An `added` entry occurs when a new or existing card is added, or when the edit command increases the quantity of the card.
+- A `modified` entry occurs when a card value is changed, **excluding** any changes to the quantity of the card.
+- A `removed` entry occurs when a card is removed, or when the edit command decreases the quantity of the card.
 - The `undo` command does not revert the history, but rather adds to the history.
   An exception to this, is the undo of the `clear` command which restores the history.
 
