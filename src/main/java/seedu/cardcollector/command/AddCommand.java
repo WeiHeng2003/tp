@@ -38,18 +38,6 @@ public class AddCommand extends Command {
     @Override
     public CommandResult execute(CommandContext context) {
         var inventory = context.getTargetList();
-        this.addedCard = new Card.Builder()
-                .uid(uid)
-                .name(name)
-                .price(price)
-                .quantity(quantity)
-                .cardSet(cardSet)
-                .rarity(rarity)
-                .condition(condition)
-                .language(language)
-                .cardNumber(cardNumber)
-                .note(note)
-                .build();
 
         for (int i = 0; i < inventory.getSize(); i++) {
             Card existing = inventory.getCard(i);
@@ -72,6 +60,18 @@ public class AddCommand extends Command {
         }
 
         if (!wasMerged) {
+            this.addedCard = new Card.Builder()
+                    .uid(uid)
+                    .name(name)
+                    .price(price)
+                    .quantity(quantity)
+                    .cardSet(cardSet)
+                    .rarity(rarity)
+                    .condition(condition)
+                    .language(language)
+                    .cardNumber(cardNumber)
+                    .note(note)
+                    .build();
             inventory.addCard(addedCard);
             this.addedIndex = inventory.getCards().size()-1;
         }

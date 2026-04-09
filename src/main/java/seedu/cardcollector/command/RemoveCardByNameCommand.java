@@ -18,7 +18,7 @@ public class RemoveCardByNameCommand extends Command {
 
         for (int i = 0; i < inventory.getSize(); i++) {
             if (inventory.getCard(i).getName().equalsIgnoreCase(targetName)) {
-                this.removedCard = inventory.getCard(i);
+                this.removedCard = inventory.getCard(i).copy();
                 this.removedIndex = i;
                 break;
             }
@@ -29,11 +29,11 @@ public class RemoveCardByNameCommand extends Command {
         if (removed) {
             this.isReversible = true;
             ui.printRemoveByNameSuccess(targetName, inventory);
+            return new CommandResult(false);
         } else {
             ui.printCardNotFound(targetName);
+            return new CommandResult(false,false);
         }
-
-        return new CommandResult(false);
     }
 
     @Override

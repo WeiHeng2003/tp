@@ -102,7 +102,7 @@ The architecture of CardCollector consists of three main components:
 3. `CardCollector` then creates a `CommandContext` and calls `command.execute(context)`.
 4. `AddCommand.execute()` scans the target list for an existing card with identical name, price, and metadata fields.   
     - If found, it calls `targetList.editCard()` to increment the quantity, and records the index for `undo()`.
-    - If not found, it calls `targetList.addCard(newCard)` to append the card and records the new index for `undo()`.
+    - If not found, it calls `targetList.addCard(addedCard)` to append the card and records the new index for `undo()`.
 5. `CardList.addCard` adds the new card and sets the timestamp of `lastAdded`。
 
 <img src="images/AddCommandSequenceDiagram.svg" width="900" />  
@@ -301,20 +301,34 @@ return lastCommand.undo(context);
 
 If the `lastCommand` was an:
 - `AddCommand`: branches on whether the original add was a merge or a new card entry.
-    ```java
-    if (wasMerged) {
-        Card existing = inventory.getCard(addedIndex);
-        int restoredQuantity = existing.getQuantity() - quantity;
-        inventory.editCard(addedIndex, null, restoredQuantity, null, null, null, null, null, null, null);
-    } else {
-        inventory.removeCardByIndex(addedIndex);
-    }
-    ```
+```java
+// loop to check through for duplicate cards for merging
+// if found: 
+this.wasMerged = true;
+this.addedIndex = i;
+
+int newQuantity = existing.getQuantity() + quantity;
+inventory.editCard(i, null, newQuantity, null,
+        null, null, null, null, null, null);
+break;
+```
+
+```java
+if (!wasMerged) {
+    // build card
+    inventory.addCard(addedCard);
+    this.addedIndex = inventory.getCards().size()-1;
+}
+
+context.getUi().printAdded(inventory);
+return new CommandResult(false);
+}
+```
+ 
 - `EditCommand`: saves old field values and sets isReversible only if something actually changes
   ```java
-    this.oldName = card.getName();
-    this.oldQuantity = card.getQuantity();
-    // ...other fields...
+    this.originalCard = inventory.getCard(targetIndex).copy();
+
     boolean changed = inventory.editCard(targetIndex, newName, newQuantity, newPrice,
             newCardSet, newRarity, newCondition, newLanguage, newCardNumber, newNote);
     this.isReversible = changed;
@@ -328,17 +342,20 @@ If the `lastCommand` was an:
   `EditCommand.undo()` then restores all fields by calling `editCard` with the saved old values:
     ```java
     public CommandResult undo(CommandContext context) {
-    context.getTargetList().editCard(targetIndex, oldName, oldQuantity, oldPrice,
-            oldCardSet, oldRarity, oldCondition, oldLanguage, oldCardNumber, oldNote);
+    context.getTargetList().restoreCard(targetIndex, originalCard);
+    context.getUi().printUndoSuccess(context.getTargetList());
+    return new CommandResult(false);
+    }
     ```
+
 - `RemoveCardByIndexCommand` or `RemoveCardByNameCommand`: saves the card and its index
     ```java
     this.removedCard = inventory.getCard(targetIndex);
     this.removedIndex = targetIndex;
     ```
-  `RemoveCardByIndexCommand.undo()` or `RemoveCardByNameCommand.undo()` then re-inserts the card at the same position
+ - `RemoveCardByIndexCommand.undo()` or `RemoveCardByNameCommand.undo()` then re-inserts the card at the same position
     ```java
-  context.getTargetList().addCardAtIndex(removedIndex, removedCard);
+    context.getTargetList().addCardAtIndex(removedIndex, removedCard);
     ```
 
 #### Sequence Diagram

@@ -17,9 +17,9 @@ public class RemoveCardByIndexCommand extends Command {
         if (targetIndex < 0 || targetIndex >= inventory.getSize()) {
             ui.printInvalidIndex();
             this.isReversible = false;
-            return new CommandResult(false);
+            return new CommandResult(false,false);
         }
-        this.removedCard = inventory.getCard(targetIndex);
+        this.removedCard = inventory.getCard(targetIndex).copy();
         inventory.removeCardByIndex(targetIndex);
         this.isReversible = true;
         ui.printRemoved(inventory,targetIndex);

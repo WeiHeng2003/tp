@@ -15,15 +15,7 @@ public class EditCommand extends Command {
     private final String newCardNumber;
     private final String newNote;
 
-    private String oldName;
-    private Integer oldQuantity;
-    private Float oldPrice;
-    private String oldCardSet;
-    private String oldRarity;
-    private String oldCondition;
-    private String oldLanguage;
-    private String oldCardNumber;
-    private String oldNote;
+    private Card originalCard;
 
     public EditCommand(int targetIndex, String newName, Integer newQuantity, Float newPrice,
                        String newCardSet, String newRarity, String newCondition,
@@ -50,16 +42,7 @@ public class EditCommand extends Command {
             return new CommandResult(false, false);
         }
 
-        Card card = inventory.getCard(targetIndex);
-        this.oldName = card.getName();
-        this.oldQuantity = card.getQuantity();
-        this.oldPrice = card.getPrice();
-        this.oldCardSet = card.getCardSet();
-        this.oldRarity = card.getRarity();
-        this.oldCondition = card.getCondition();
-        this.oldLanguage = card.getLanguage();
-        this.oldCardNumber = card.getCardNumber();
-        this.oldNote = card.getNote();
+        this.originalCard = inventory.getCard(targetIndex).copy();
 
         boolean changed = inventory.editCard(targetIndex, newName, newQuantity, newPrice,
                 newCardSet, newRarity, newCondition, newLanguage, newCardNumber, newNote);
@@ -75,8 +58,7 @@ public class EditCommand extends Command {
 
     @Override
     public CommandResult undo(CommandContext context) {
-        context.getTargetList().editCard(targetIndex, oldName, oldQuantity, oldPrice,
-                oldCardSet, oldRarity, oldCondition, oldLanguage, oldCardNumber, oldNote);
+        context.getTargetList().restoreCard(targetIndex, originalCard);
         context.getUi().printUndoSuccess(context.getTargetList());
         return new CommandResult(false);
     }

@@ -14,6 +14,7 @@ public class UndoUploadCommand extends Command {
         context.getInventory().replaceWith(backupState.getInventory());
         context.getWishlist().replaceWith(backupState.getWishlist());
         context.getUploadUndoState().clear();
+        context.getCommandHistory().clear();
         context.getUi().printUndoUploadSuccess(context.getStorage().getFilePath());
         return new CommandResult(false);
     }

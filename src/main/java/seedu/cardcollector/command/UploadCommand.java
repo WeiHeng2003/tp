@@ -26,6 +26,7 @@ public class UploadCommand extends Command {
             context.getUploadUndoState().saveBackup(new AppState(context.getInventory(), context.getWishlist()));
             context.getInventory().replaceWith(importedState.getInventory());
             context.getWishlist().replaceWith(importedState.getWishlist());
+            context.getCommandHistory().clear();
             context.getUi().printUploadSuccess(sourcePath, context.getStorage().getFilePath());
         } catch (IOException e) {
             context.getUi().printStorageTransferError("upload", sourcePath, e.getMessage());
