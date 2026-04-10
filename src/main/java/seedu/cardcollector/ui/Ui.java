@@ -26,9 +26,11 @@ import java.util.stream.Collectors;
 
 public class Ui {
     private static final String FORMAT_UNKNOWN_COMMAND =
-            "Unknown command \"%1$s\" entered%n";
+            "Unknown command \"%1$s\" detected, %n" +
+            "enter \"help\" to list all commands.%n";
     private static final String FORMAT_BLANK_COMMAND =
-            "Blank command entered, did you mean to type something?%n";
+            "Blank command detected, did you mean to type something?%n" +
+            "enter \"help\" to list all commands.%n";
     private static final String FORMAT_INVALID_ARGUMENT =
             "%1$s%n%n";
     private static final String FORMAT_INVALID_ARGUMENT_SYNTAX_USAGE =
