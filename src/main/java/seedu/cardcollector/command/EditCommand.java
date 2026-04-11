@@ -39,6 +39,7 @@ public class EditCommand extends Command {
         var inventory = context.getTargetList();
         if (targetIndex < 0 || targetIndex >= inventory.getSize()) {
             ui.printInvalidIndex();
+            this.isReversible = false;
             return new CommandResult(false, false);
         }
 
