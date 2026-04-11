@@ -376,7 +376,7 @@ public class CardsList {
         boolean anyFieldChanged = false;
 
         if (isUpdatedValue(card.getName(), newName)) {
-            card.setName(trimOrNull(newName.get()));
+            card.setName(safeTrim(newName.get()));
             anyFieldChanged = true;
         }
         if (isUpdatedValue(card.getPrice(), newPrice)) {
@@ -384,28 +384,28 @@ public class CardsList {
             anyFieldChanged = true;
         }
         if (isUpdatedValue(card.getCardSet(), newCardSet)) {
-            card.setCardSet(trimOrNull(newCardSet.get()));
+            card.setCardSet(safeTrim(newCardSet.get()));
             anyFieldChanged = true;
         }
         if (isUpdatedValue(card.getRarity(), newRarity)) {
-            card.setRarity(trimOrNull(newRarity.get()));
+            card.setRarity(safeTrim(newRarity.get()));
             anyFieldChanged = true;
         }
         if (isUpdatedValue(card.getCondition(), newCondition)) {
-            card.setCondition(trimOrNull(newCondition.get()));
+            card.setCondition(safeTrim(newCondition.get()));
             anyFieldChanged = true;
         }
         if (isUpdatedValue(card.getLanguage(), newLanguage)) {
-            card.setLanguage(trimOrNull(newLanguage.get()));
+            card.setLanguage(safeTrim(newLanguage.get()));
             anyFieldChanged = true;
         }
         if (isUpdatedValue(card.getCardNumber(), newCardNumber)) {
-            card.setCardNumber(trimOrNull(newCardNumber.get()));
+            card.setCardNumber(safeTrim(newCardNumber.get()));
             anyFieldChanged = true;
         }
 
         if (isUpdatedValue(card.getNote(), newNote)) {
-            card.setNote(trimOrNull(newNote.get()));
+            card.setNote(safeTrim(newNote.get()));
             anyFieldChanged = true;
         }
 
@@ -502,7 +502,7 @@ public class CardsList {
         return value == null ? "" : value.trim().toLowerCase(Locale.ROOT);
     }
 
-    private static String trimOrNull(String value) {
+    private static String safeTrim(String value) {
         if (value == null) {
             return null;
         }
